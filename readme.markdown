@@ -16,6 +16,7 @@ Table of Contents
 2. [Architecture](https://github.com/majestic53/json#architecture)
 	* [Lexer](https://github.com/majestic53/json#lexer)
 	* [Parser](https://github.com/majestic53/json#parser)
+	* [Document](https://github.com/majestic53/json#document)
 3. [Syntax](https://github.com/majestic53/json#syntax)
 	* [JSON Object](https://github.com/majestic53/json#json-object)
 	* [JSON BNF](https://github.com/majestic53/json#json-bnf)
@@ -34,8 +35,14 @@ Architecture
 
 ###Parser
 
+###Document
+
 Syntax
 ========
+
+###JSON Object
+
+###JSON BNF
 
 Example
 ========
