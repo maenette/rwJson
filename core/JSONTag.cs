@@ -33,7 +33,7 @@ namespace JSON
     public abstract class JSONTag
     {
         /* 
-         * Tag types
+         * JSON Tag types
          */
         public enum JSONTagType
         {
@@ -53,6 +53,91 @@ namespace JSON
         {
             key = Key;
             type = Type;
+        }
+
+        /*
+         * Retrieve array tag
+         * @return array tag
+         */
+        public JSONArrayTag AsArray()
+        {
+            if (Type != JSONTagType.Array)
+            {
+                throw new JSONException(
+                    JSONException.JSONExceptionType.NotTypeArray,
+                    Type.ToString()
+                    );
+            }
+
+            return ((JSONArrayTag)this);
+        }
+
+        /*
+         * Retrieve boolean tag value
+         * @return boolean tag value
+         */
+        public bool AsBoolean()
+        {
+            if (Type != JSONTagType.Boolean)
+            {
+                throw new JSONException(
+                    JSONException.JSONExceptionType.NotTypeBoolean,
+                    Type.ToString()
+                    );
+            }
+
+            return ((JSONBooleanTag)this).Value;
+        }
+
+        /*
+         * Retrieve number tag value
+         * @return number tag value
+         */
+        public double AsNumber()
+        {
+            if (Type != JSONTagType.Number)
+            {
+                throw new JSONException(
+                    JSONException.JSONExceptionType.NotTypeNumber,
+                    Type.ToString()
+                    );
+            }
+
+            return ((JSONNumberTag)this).Value;
+        }
+
+        /*
+         * Retrieve object tag
+         * @return object tag
+         */
+        public JSONObjectTag AsObject()
+        {
+            if (Type != JSONTagType.Object)
+            {
+                throw new JSONException(
+                    JSONException.JSONExceptionType.NotTypeObject,
+                    Type.ToString()
+                    );
+            }
+
+            return ((JSONObjectTag)this);
+        }
+
+        /*
+         * Retrieve string tag value
+         * @return string tag value
+         */
+        public string AsString()
+        {
+            if (Type != JSONTagType.String)
+            {
+                throw new JSONException(
+                    JSONException.JSONExceptionType.NotTypeString,
+                    Type.ToString()
+                    );
+            }
+
+            return ((JSONStringTag)this).Value;
         }
 
         /*

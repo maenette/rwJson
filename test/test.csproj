@@ -77,9 +77,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="json">
-      <HintPath>..\core\bin\Debug\json.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\core\core.csproj">
+      <Project>{9dcd664c-6d87-430f-bec4-35f3daaceea6}</Project>
+      <Name>core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -28,63 +28,99 @@ namespace JSON
     /*
      * JSON document class
      * -------------------
-     * Holds a root object tag, representing a JSON document
+     * Holds a root object tag dictionary, representing a JSON document
      */
-    public class JSONDocument
+    public class JSONDocument : Dictionary<string, JSONObjectTag>
     {
 
         /*
          * JSON document constructor
+         * @param IsOverridable determine if input is overridable
          */
-        public JSONDocument()
+        public JSONDocument(bool IsOverridable)
         {
-            rootTags = new List<JSONObjectTag>();
+            isOverridable = IsOverridable;
         }
 
         /*
          * JSON document constructor
+         * @param Key JSON key string
          * @param Input JSON data or file path
          * @param IsFile determine if input in a file path
+         * @param IsOverridable determine if input is overridable
          */
-        public JSONDocument(string Path, bool IsFile)
+        public JSONDocument(string Key, string Input, bool IsFile, bool IsOverridable)
         {
-            Read(Path, IsFile);
+            isOverridable = IsOverridable;
+            ReadAppend(Key, Input, IsFile);
+        }
+
+        /*
+         * Add new JSON document object
+         * @param Key JSON key string
+         */
+        public void AddNew(string Key)
+        {
+            ReadAppend(Key, string.Empty, false);
         }
 
         /*
          * Read in JSON data or file
+         * @param Key JSON key string
          * @param Input JSON data or file path
          * @param IsFile determine if input in a file path
          */
-        public void Read(string Input, bool IsFile)
+        public void Read(string Key, string Input, bool IsFile)
         {
-            JSONParser parser = new JSONParser(Input, IsFile);
-            rootTags = parser.RootTags;
+            Clear();
+            ReadAppend(Key, Input, IsFile);
         }
 
         /*
-         * JSON document string representation
-         * @return document string representation
+         * Read and append JSON data or file
+         * @param Key JSON key string
+         * @param Input JSON data or file path
+         * @param IsFile determine if input in a file path
          */
-        public override string ToString()
+        public void ReadAppend(string Key, string Input, bool IsFile)
         {
-            bool firstIter = true;
-            StringBuilder stream = new StringBuilder();
+            JSONObjectTag objectTag;
 
-            foreach (JSONObjectTag tag in rootTags)
+            if (TryGetValue(Key, out objectTag))
             {
-                if (!firstIter)
+                if (!isOverridable)
                 {
-                    stream.Append((char)JSONDefines.JSONSymbolType.PairDelimiter).Append((char)JSONDefines.JSONWhitespaceType.LineFeed);
+                    throw new JSONException(
+                        JSONException.JSONExceptionType.EntryNotUnique,
+                        "\'" + Key + "\'"
+                        );
                 }
                 else
                 {
-                    firstIter = false;
+                    Remove(Key);
                 }
-                stream.Append(tag.ToString());
+            }
+            Add(Key, new JSONParser(Input, IsFile).RootTag);
+        }
+
+        /*
+         * JSON document object string representation
+         * @param Key JSON key string
+         * @return document object string representation
+         */
+        public string ToString(string Key)
+        {
+            JSONObjectTag objectTag;
+
+            if (!TryGetValue(Key, out objectTag))
+            {
+                throw new JSONException(
+                    JSONException.JSONExceptionType.ObjectNotFound,
+                    "\'" + Key + "\'"
+                    );
             }
 
-            return stream.ToString();
+            return objectTag.ToString();
         }
 
         /*
@@ -115,16 +151,26 @@ namespace JSON
 
         /*
          * Write JSON data to file
+         * @param Key JSON key string
          * @param Path JSON file path
          */
-        public void Write(string Path)
+        public void Write(string Key, string Path)
         {
             StreamWriter stream;
+            JSONObjectTag objectTag;
+
+            if (!TryGetValue(Key, out objectTag))
+            {
+                throw new JSONException(
+                    JSONException.JSONExceptionType.ObjectNotFound,
+                    "\'" + Key + "\'"
+                    );
+            }
 
             try
             {
                 stream = new StreamWriter(Path);
-                stream.WriteLine(rootTags.ToString());
+                stream.WriteLine(objectTag.ToString());
                 stream.Close();
             }
             catch (Exception exception)
@@ -138,13 +184,13 @@ namespace JSON
         }
 
         /*
-         * JSON root tag
+         * JSON tag override flag
          */
-        public List<JSONObjectTag> RootTags
+        public bool IsOverridable
         {
-            get { return rootTags; }
+            get { return isOverridable; }
         }
 
-        private List<JSONObjectTag> rootTags;
+        private bool isOverridable;
     }
 }

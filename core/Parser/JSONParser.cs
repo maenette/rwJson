@@ -37,8 +37,8 @@ namespace JSON
          */
         public JSONParser()
         {
-            rootTags = new List<JSONObjectTag>();
-            ClearRootTags();
+            rootTag = new JSONObjectTag(string.Empty);
+            ClearRootTag();
         }
 
         /*
@@ -48,8 +48,8 @@ namespace JSON
          */
         public JSONParser(string Input, bool IsFile)
         {
-            rootTags = new List<JSONObjectTag>();
-            SetRootTags(Input, IsFile);
+            rootTag = new JSONObjectTag(string.Empty);
+            SetRootTag(Input, IsFile);
         }
 
         /*
@@ -79,18 +79,18 @@ namespace JSON
         /*
          * Clear JSON parser
          */
-        public void ClearRootTags()
+        public void ClearRootTag()
         {
             ResetTokens();
-            rootTags.Clear();
+            rootTag.Value.Clear();
         }
 
         /*
          * Enumerate root JSON object
          */
-        public void DiscoverRootTags()
+        public void DiscoverRootTag()
         {
-            rootTags = EnumerateRootTags();
+            rootTag = EnumerateRootTag();
         }
 
         /*
@@ -259,31 +259,19 @@ namespace JSON
          * Enumerate JSON root object tags
          * @retrun JSON root object tags
          */
-        private List<JSONObjectTag> EnumerateRootTags()
+        private JSONObjectTag EnumerateRootTag()
         {
             JSONToken currentToken;
-            List<JSONObjectTag> rootTag = new List<JSONObjectTag>();
+            JSONObjectTag rootTag = new JSONObjectTag(string.Empty);
 
-            ClearRootTags();
+            ClearRootTag();
             currentToken = GetToken();
 
             if (HasNextToken() && (currentToken.Type == JSONToken.JSONTokenType.Begin))
             {
                 currentToken = AdvanceToken();
             }
-
-            while (HasNextToken())
-            {
-                rootTag.Add(EnumerateObject(true));
-                currentToken = GetToken();
-
-                if ((currentToken.Type != JSONToken.JSONTokenType.Symbol)
-                    || ((char)currentToken.SubType != (char)JSONDefines.JSONSymbolType.PairDelimiter))
-                {
-                    break;
-                }
-                currentToken = MoveNextToken();
-            }
+            rootTag = EnumerateObject(true);
 
             return rootTag;
         }
@@ -296,7 +284,9 @@ namespace JSON
         private JSONTag EnumerateTag(bool SkipKey = false)
         {
             JSONTag newTag;
+            bool newTagBoolValue;
             JSONToken currentToken;
+            double newTagDoubleValue;
             string newTagKey = string.Empty;
 
             if (!SkipKey)
@@ -308,8 +298,7 @@ namespace JSON
             switch (currentToken.Type)
             {
                 case JSONToken.JSONTokenType.Boolean:
-                    bool newTagBoolValue;
-
+                    
                     if (!Boolean.TryParse((string)currentToken.SubType, out newTagBoolValue))
                     {
                         throw new JSONException(
@@ -321,7 +310,6 @@ namespace JSON
                     AdvanceToken();
                     break;
                 case JSONToken.JSONTokenType.Number:
-                    double newTagDoubleValue;
 
                     if (!Double.TryParse(currentToken.Text, out newTagDoubleValue))
                     {
@@ -388,10 +376,10 @@ namespace JSON
          * @param Input JSON data or file path
          * @param IsFile determine if input in a file path
          */
-        public void SetRootTags(string Input, bool IsFile)
+        public void SetRootTag(string Input, bool IsFile)
         {
             SetTokens(Input, IsFile);
-            DiscoverRootTags();
+            DiscoverRootTag();
         }
 
         /*
@@ -400,33 +388,17 @@ namespace JSON
          */
         public override string ToString()
         {
-            bool firstIter = true;
-            StringBuilder stream = new StringBuilder();
-
-            foreach (JSONObjectTag tag in rootTags)
-            {
-                if (!firstIter)
-                {
-                    stream.Append((char)JSONDefines.JSONSymbolType.PairDelimiter).Append((char)JSONDefines.JSONWhitespaceType.LineFeed);
-                }
-                else
-                {
-                    firstIter = false;
-                }
-                stream.Append(tag.ToString());
-            }
-
-            return stream.ToString();
+            return rootTag.ToString();
         }
 
         /*
          * Parser root object tag
          */
-        public List<JSONObjectTag> RootTags
+        public JSONObjectTag RootTag
         {
-            get { return rootTags; }
+            get { return rootTag; }
         }
 
-        private List<JSONObjectTag> rootTags;
+        private JSONObjectTag rootTag;
     }
 }

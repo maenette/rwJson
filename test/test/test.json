@@ -9,7 +9,7 @@
         "postalCode": 10021
     },
     "phoneNumbers": [
-        [{
+        {
             "type": "home",
             "number": "212 555-1234",
 			"callable": true
@@ -18,7 +18,6 @@
             "type": "fax",
             "number": "646 555-4567",
 			"callable": false
-        }],
-		[true, false], "test", 34, 3.14159
+        }
     ]
 },

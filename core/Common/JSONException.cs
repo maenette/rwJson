@@ -54,6 +54,12 @@ namespace JSON
             NoNextToken,                            // no next token exists in token stream
             NoPreviousCharacter,                    // no previous character exists in character stream
             NoPreviousToken,                        // no previous token exists in token stream
+            NotTypeArray,                           // not array tag type
+            NotTypeBoolean,                         // not boolean tag type
+            NotTypeNumber,                          // not number tag type
+            NotTypeObject,                          // not object tag type
+            NotTypeString,                          // not string tag type
+            ObjectNotFound,                         // object not found
             RowOutOfBounds,                         // character row does not exist
             TokenAlreadyExists,                     // token already exists
             TokenNotFound,                          // token does not exist

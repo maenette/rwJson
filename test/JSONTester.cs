@@ -17,8 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System;
 using JSON;
+using System;
 
 class TestClass
 {
@@ -29,13 +29,18 @@ class TestClass
         try
         {
             // read in a json file
-            JSONDocument doc = new JSONDocument("..\\..\\test\\test.json", true);
+            JSONDocument doc = new JSONDocument("test", "..\\..\\test\\test.json", true, false);
+
+            // retrieve key-value pairs from json object
+            Console.WriteLine("NAME: " + doc["test"].Value["firstName"].AsString() + " " + doc["test"].Value["lastName"].AsString()
+                + "\nHOMEPHONE: " + doc["test"].Value["phoneNumbers"].AsArray().Value[0].AsObject().Value["number"].AsString());
+            Console.WriteLine("AGE: " + doc["test"].Value["age"].AsNumber());
 
             // print out json file contents
-            System.Console.WriteLine(doc.ToString());
+            System.Console.WriteLine(doc.ToString("test"));
 
             // write json contents to new json file
-            //doc.Write("..\\..\\test\\test_copy.json");
+            doc.Write("test", "..\\..\\test\\test_copy.json");
         }
         catch (JSONException exception)
         {
