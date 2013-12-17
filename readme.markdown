@@ -6,15 +6,15 @@ A small JSON library, written in C#, capable of reading and writing JSON files.
 ###Version 0.1.1351.04
 Updated: 12/16/2013
 
-JSONDocument class now holds a dictionary of JSONObjectTags
-JSONDocument can now call ReadAppend() to read in multiple JSON files
-JSONDocument now holds an override flag that allows old JSON files to be removed automatically if keys match
-JSONTag classes now contain routines for converting to all derived types (array, bool, number, object, string) with type checking
+* JSONDocument class now holds a dictionary of JSONObjectTags
+* JSONDocument can now call ReadAppend() to read in multiple JSON files
+* JSONDocument now holds an override flag that allows old JSON files to be removed automatically if keys match
+* JSONTag classes now contain routines for converting to all derived types (array, bool, number, object, string) with type checking
 
 ###Version 0.1.1351.02
 Updated: 12/15/2013
 
-Initial Release
+* Initial Release
 
 Table of Contents
 ========
