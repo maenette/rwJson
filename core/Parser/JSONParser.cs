@@ -82,7 +82,7 @@ namespace JSON
         public void ClearRootTag()
         {
             ResetTokens();
-            rootTag.Value.Clear();
+            rootTag.Clear();
         }
 
         /*
@@ -125,7 +125,7 @@ namespace JSON
 
                 while (HasNextToken())
                 {
-                    newTag.Value.Add(EnumerateTag(true));
+                    newTag.Add(EnumerateTag(true));
                     currentToken = GetToken();
 
                     if ((currentToken.Type != JSONToken.JSONTokenType.Symbol)
@@ -191,7 +191,7 @@ namespace JSON
          */
         private JSONObjectTag EnumerateObject(bool SkipKey = false)
         {
-            JSONTag newSubTag;
+            IJSONTag newSubTag;
             JSONToken currentToken;
             JSONObjectTag newTag = new JSONObjectTag(string.Empty);
 
@@ -221,13 +221,13 @@ namespace JSON
 
                     try
                     {
-                        newTag.Value.Add(newSubTag.Key, newSubTag);
+                        newTag.Add(newSubTag.GetKey(), newSubTag);
                     }
                     catch (Exception exception)
                     {
                         throw new JSONException(
-                            JSONException.JSONExceptionType.EntryNotUnique,
-                            "\'" + newSubTag.Key + "\'",
+                            JSONException.JSONExceptionType.KeyNotUnique,
+                            "\'" + newSubTag.GetKey() + "\'",
                             exception
                             );
                     }
@@ -281,9 +281,9 @@ namespace JSON
          * @param SkipKey skip key parsing (default: false)
          * @retrun JSON tag
          */
-        private JSONTag EnumerateTag(bool SkipKey = false)
+        private IJSONTag EnumerateTag(bool SkipKey = false)
         {
-            JSONTag newTag;
+            IJSONTag newTag;
             bool newTagBoolValue;
             JSONToken currentToken;
             double newTagDoubleValue;
@@ -331,11 +331,11 @@ namespace JSON
                     {
                         case (char)JSONDefines.JSONSymbolType.ArrayOpen:
                             newTag = EnumerateArray(true);
-                            newTag.Key = newTagKey;
+                            newTag.SetKey(newTagKey);
                             break;
                         case (char)JSONDefines.JSONSymbolType.ObjectOpen:
                             newTag = EnumerateObject(true);
-                            newTag.Key = newTagKey;
+                            newTag.SetKey(newTagKey);
                             break;
                         default:
                             throw new JSONException(

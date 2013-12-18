@@ -3,6 +3,11 @@ JSON
 
 A small JSON library, written in C#, capable of reading and writing JSON files.
 
+###Version 0.1.1351.05
+Updated: 12/17/2013
+
+* JSONTag array/object tags are now accessible via the indexer operator
+
 ###Version 0.1.1351.04
 Updated: 12/16/2013
 

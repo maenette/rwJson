@@ -24,52 +24,157 @@ using System.Text;
 namespace JSON
 {
 
-    /*
-     * JSON abstract tag class
-     * -----------------------
-     * Holds JSON tag key and type information. All tags derive
-     * from this class.
+    /* 
+     * JSON Tag types
      */
-    public abstract class JSONTag
+    public enum JSONTagType
     {
-        /* 
-         * JSON Tag types
-         */
-        public enum JSONTagType
-        {
-            Array = 0,               // Array tag type
-            Boolean,                 // Boolean tag type
-            Number,                  // Number (double) tag type
-            Object,                  // Object tag type
-            String,                  // String tag type
-        }
+        Array = 0,               // Array tag type
+        Boolean,                 // Boolean tag type
+        Number,                  // Number (double) tag type
+        Object,                  // Object tag type
+        String,                  // String tag type
+    }
+
+    /*
+     * JSON tag interface
+     * ------------------
+     * Holds JSON tag key and type information.
+     */
+    public interface IJSONTag
+    {
 
         /*
-         * JSON tag constructor
-         * @param Key tag key string
-         * @param Type tag type
+         * Array indexer overload
+         * @param Index array index
          */
-        public JSONTag(string Key, JSONTagType Type)
+        IJSONTag this[int Index] { get; set; }
+
+        /*
+         * Object indexer overload
+         * @param Key key string
+         */
+        IJSONTag this[string Key] { get; set; }
+
+        /*
+         * Retrieve array tag value
+         * @return array tag value
+         */
+        JSONArrayTag AsArray();
+
+        /*
+         * Retrieve boolean tag value
+         * @return boolean tag value
+         */
+        bool AsBoolean();
+
+        /*
+         * Retrieve number tag value
+         * @return number tag value
+         */
+        double AsNumber();
+
+        /*
+         * Retrieve object tag value
+         * @return object tag value
+         */
+        JSONObjectTag AsObject();
+
+        /*
+         * Retrieve string tag value
+         * @return string tag value
+         */
+        string AsString();
+
+        /*
+         * Retrieve tag key string
+         * @return tag key string
+         */
+        string GetKey();
+
+        /*
+         * Retrieve tag type
+         * @return tag type
+         */
+        JSONTagType GetTagType();
+
+        /*
+         * Serialization routine
+         * @param Tab JSON syntax tab amount (default: 0)
+         * @return JSON style string representing a tag
+         */
+        string Serialize(uint Tab = 0);
+
+        /*
+         * Set tag key string
+         * @param Key tag key string
+         */
+        void SetKey(string Key);
+    }
+
+    /*
+     * JSON array tag class
+     * --------------------
+     * Holds an array of JSON types (not always of the same type)
+     * Syntax "<key>" : [ <pair_list> ]
+     */
+    public class JSONArrayTag : List<IJSONTag>, IJSONTag
+    {
+
+        /*
+         * JSON array tag constructor
+         * @param Key tag key string
+         */
+        public JSONArrayTag(string Key)
         {
             key = Key;
-            type = Type;
+            type = JSONTagType.Array;
         }
 
         /*
-         * Retrieve array tag
-         * @return array tag
+         * JSON array tag constructor
+         * @param Key tag key string
+         * @param Value tag type
+         */
+        public JSONArrayTag(string Key, List<IJSONTag> Value)
+        {
+            key = Key;
+            type = JSONTagType.Array;
+
+            foreach (IJSONTag tag in Value)
+            {
+                Add(tag);
+            }
+        }
+
+        /*
+         * Object indexer overload
+         * @param Key key string
+         */
+        public IJSONTag this[string Key]
+        {
+            get { 
+                throw new JSONException(
+                    JSONException.JSONExceptionType.NotTypeObject, 
+                    type.ToString()
+                    ); 
+            }
+
+            set { 
+                throw new JSONException(
+                    JSONException.JSONExceptionType.NotTypeObject, 
+                    type.ToString()
+                    ); 
+            }
+        }
+
+        /*
+         * Retrieve array tag value
+         * @return array tag value
          */
         public JSONArrayTag AsArray()
         {
-            if (Type != JSONTagType.Array)
-            {
-                throw new JSONException(
-                    JSONException.JSONExceptionType.NotTypeArray,
-                    Type.ToString()
-                    );
-            }
-
-            return ((JSONArrayTag)this);
+            return this;
         }
 
         /*
@@ -78,15 +183,10 @@ namespace JSON
          */
         public bool AsBoolean()
         {
-            if (Type != JSONTagType.Boolean)
-            {
-                throw new JSONException(
-                    JSONException.JSONExceptionType.NotTypeBoolean,
-                    Type.ToString()
-                    );
-            }
-
-            return ((JSONBooleanTag)this).Value;
+            throw new JSONException(
+                JSONException.JSONExceptionType.NotTypeBoolean,
+                type.ToString()
+                );
         }
 
         /*
@@ -95,32 +195,22 @@ namespace JSON
          */
         public double AsNumber()
         {
-            if (Type != JSONTagType.Number)
-            {
-                throw new JSONException(
-                    JSONException.JSONExceptionType.NotTypeNumber,
-                    Type.ToString()
-                    );
-            }
-
-            return ((JSONNumberTag)this).Value;
+            throw new JSONException(
+                JSONException.JSONExceptionType.NotTypeNumber,
+                type.ToString()
+                );
         }
 
         /*
-         * Retrieve object tag
-         * @return object tag
+         * Retrieve object tag value
+         * @return object tag value
          */
         public JSONObjectTag AsObject()
         {
-            if (Type != JSONTagType.Object)
-            {
-                throw new JSONException(
-                    JSONException.JSONExceptionType.NotTypeObject,
-                    Type.ToString()
-                    );
-            }
-
-            return ((JSONObjectTag)this);
+            throw new JSONException(
+                JSONException.JSONExceptionType.NotTypeObject,
+                type.ToString()
+                );
         }
 
         /*
@@ -129,39 +219,105 @@ namespace JSON
          */
         public string AsString()
         {
-            if (Type != JSONTagType.String)
-            {
-                throw new JSONException(
-                    JSONException.JSONExceptionType.NotTypeString,
-                    Type.ToString()
-                    );
-            }
-
-            return ((JSONStringTag)this).Value;
+            throw new JSONException(
+                JSONException.JSONExceptionType.NotTypeString,
+                type.ToString()
+                );
         }
 
         /*
-         * Abstract serialization routine (required by all derivative classes)
+         * Retrieve tag key string
+         * @return tag key string
+         */
+        public string GetKey()
+        {
+            return key;
+        }
+
+        /*
+         * Retrieve tag type
+         * @return tag type
+         */
+        public JSONTagType GetTagType()
+        {
+            return type;
+        }
+
+        /*
+         * Serialization routine
          * @param Tab JSON syntax tab amount (default: 0)
          * @return JSON style string representing a tag
          */
-        public abstract string Serialize(uint Tab = 0);
-
-        /*
-         * JSON tag string representation
-         * @return tag string representation
-         */
-        public override string ToString()
+        public string Serialize(uint Tab = 0)
         {
+            uint tabIter;
+            bool firstIter = true;
             StringBuilder stream = new StringBuilder();
 
-            stream.Append("[" + type.ToString() + "] \"" + key + "\"");
+            for (tabIter = 0; tabIter < Tab; ++tabIter)
+            {
+                stream.Append((char)JSONDefines.JSONWhitespaceType.Tab);
+            }
+
+            if (key.Length > 0)
+            {
+                stream.Append((char)JSONDefines.JSONSymbolType.StringDelimiter + key + (char)JSONDefines.JSONSymbolType.StringDelimiter
+                    + (char)JSONDefines.JSONSymbolType.PairSeperator + (char)JSONDefines.JSONWhitespaceType.Space);
+            }
+            stream.Append((char)JSONDefines.JSONSymbolType.ArrayOpen);
+
+            if (Count > 0)
+            {
+                stream.Append((char)JSONDefines.JSONWhitespaceType.LineFeed);
+            }
+
+            foreach (IJSONTag tag in this)
+            {
+                if (!firstIter)
+                {
+                    stream.Append((char)JSONDefines.JSONSymbolType.PairDelimiter).Append((char)JSONDefines.JSONWhitespaceType.LineFeed);
+                }
+                else
+                {
+                    firstIter = false;
+                }
+                stream.Append(tag.Serialize(Tab + 1));
+            }
+
+            if (Count > 0)
+            {
+                stream.Append((char)JSONDefines.JSONWhitespaceType.LineFeed);
+
+                for (tabIter = 0; tabIter < Tab; ++tabIter)
+                {
+                    stream.Append((char)JSONDefines.JSONWhitespaceType.Tab);
+                }
+            }
+            stream.Append((char)JSONDefines.JSONSymbolType.ArrayClose);
 
             return stream.ToString();
         }
 
         /*
-         * Tag key string
+         * Set tag key string
+         * @param Key tag key string
+         */
+        public void SetKey(string Key)
+        {
+            key = Key;
+        }
+
+        /*
+         * JSON array tag string representation
+         * @return array tag string representation
+         */
+        public override string ToString()
+        {
+            return Serialize();
+        }
+
+        /*
+         * Tag key
          */
         public string Key
         {
@@ -182,118 +338,12 @@ namespace JSON
     }
 
     /*
-     * JSON array tag class
-     * --------------------
-     * Holds an array of JSON types (not always of the same type)
-     * Syntax "<key>" : [ <pair_list> ]
-     */
-    public class JSONArrayTag : JSONTag
-    {
-
-        /*
-         * JSON array tag constructor
-         * @param Key tag key string
-         */
-        public JSONArrayTag(string Key)
-            : base(Key, JSONTagType.Array)
-        {
-            objectList = new List<JSONTag>();
-        }
-
-        /*
-         * JSON array tag constructor
-         * @param Key tag key string
-         * @param Value tag type
-         */
-        public JSONArrayTag(string Key, List<JSONTag> Value)
-            : base(Key, JSONTagType.Array)
-        {
-            objectList = Value;
-        }
-
-        /*
-         * Serialization routine
-         * @param Tab JSON syntax tab amount (default: 0)
-         * @return JSON style string representing a tag
-         */
-        public override string Serialize(uint Tab = 0)
-        {
-            uint tabIter;
-            bool firstIter = true;
-            StringBuilder stream = new StringBuilder();
-
-            for (tabIter = 0; tabIter < Tab; ++tabIter)
-            {
-                stream.Append((char)JSONDefines.JSONWhitespaceType.Tab);
-            }
-
-            if (Key.Length > 0)
-            {
-                stream.Append((char)JSONDefines.JSONSymbolType.StringDelimiter + Key + (char)JSONDefines.JSONSymbolType.StringDelimiter
-                    + (char)JSONDefines.JSONSymbolType.PairSeperator + (char)JSONDefines.JSONWhitespaceType.Space);
-            }
-            stream.Append((char)JSONDefines.JSONSymbolType.ArrayOpen);
-
-            if (Value.Count > 0)
-            {
-                stream.Append((char)JSONDefines.JSONWhitespaceType.LineFeed);
-            }
-
-            foreach (JSONTag tag in Value)
-            {
-                if (!firstIter)
-                {
-                    stream.Append((char)JSONDefines.JSONSymbolType.PairDelimiter).Append((char)JSONDefines.JSONWhitespaceType.LineFeed);
-                }
-                else
-                {
-                    firstIter = false;
-                }
-                stream.Append(tag.Serialize(Tab + 1));
-            }
-
-            if (Value.Count > 0)
-            {
-                stream.Append((char)JSONDefines.JSONWhitespaceType.LineFeed);
-
-                for (tabIter = 0; tabIter < Tab; ++tabIter)
-                {
-                    stream.Append((char)JSONDefines.JSONWhitespaceType.Tab);
-                }
-            }
-            stream.Append((char)JSONDefines.JSONSymbolType.ArrayClose);
-
-            return stream.ToString();
-        }
-
-        /*
-         * JSON array tag string representation
-         * @return array tag string representation
-         */
-        public override string ToString()
-        {
-            return Serialize();
-        }
-
-        /*
-         * Tag value
-         */
-        public List<JSONTag> Value
-        {
-            get { return objectList; }
-            set { objectList = value; }
-        }
-
-        private List<JSONTag> objectList;
-    }
-
-    /*
      * JSON boolean tag class
      * ----------------------
      * Holds a boolean value
      * Syntax "<key>" : (true|false)
      */
-    public class JSONBooleanTag : JSONTag
+    public class JSONBooleanTag : IJSONTag
     {
 
         /*
@@ -301,8 +351,9 @@ namespace JSON
          * @param Key tag key string
          */
         public JSONBooleanTag(string Key)
-            : base(Key, JSONTagType.Boolean)
         {
+            key = Key;
+            type = JSONTagType.Boolean;
             objectValue = false;
         }
 
@@ -312,9 +363,131 @@ namespace JSON
          * @param Value tag type
          */
         public JSONBooleanTag(string Key, bool Value)
-            : base(Key, JSONTagType.Boolean)
         {
+            key = Key;
+            type = JSONTagType.Boolean;
             objectValue = Value;
+        }
+
+        /*
+         * Array indexer overload
+         * @param Index array index
+         */
+        public IJSONTag this[int Index]
+        {
+            get
+            {
+                throw new JSONException(
+                    JSONException.JSONExceptionType.NotTypeArray,
+                    type.ToString()
+                    );
+            }
+
+            set
+            {
+                throw new JSONException(
+                    JSONException.JSONExceptionType.NotTypeArray,
+                    type.ToString()
+                    );
+            }
+        }
+
+        /*
+         * Object indexer overload
+         * @param Key key string
+         */
+        public IJSONTag this[string Key]
+        {
+            get
+            {
+                throw new JSONException(
+                    JSONException.JSONExceptionType.NotTypeObject,
+                    type.ToString()
+                    );
+            }
+
+            set
+            {
+                throw new JSONException(
+                    JSONException.JSONExceptionType.NotTypeObject,
+                    type.ToString()
+                    );
+            }
+        }
+
+        /*
+         * Retrieve array tag value
+         * @return array tag value
+         */
+        public JSONArrayTag AsArray()
+        {
+            throw new JSONException(
+                JSONException.JSONExceptionType.NotTypeArray,
+                type.ToString()
+                );
+        }
+
+        /*
+         * Retrieve boolean tag value
+         * @return boolean tag value
+         */
+        public bool AsBoolean()
+        {
+            return this.Value;
+        }
+
+        /*
+         * Retrieve number tag value
+         * @return number tag value
+         */
+        public double AsNumber()
+        {
+            throw new JSONException(
+                JSONException.JSONExceptionType.NotTypeNumber,
+                type.ToString()
+                );
+        }
+
+        /*
+         * Retrieve object tag value
+         * @return object tag value
+         */
+        public JSONObjectTag AsObject()
+        {
+            throw new JSONException(
+                JSONException.JSONExceptionType.NotTypeObject,
+                type.ToString()
+                );
+        }
+
+        /*
+         * Retrieve string tag value
+         * @return string tag value
+         */
+        public string AsString()
+        {
+            throw new JSONException(
+                JSONException.JSONExceptionType.NotTypeString,
+                type.ToString()
+                );
+        }
+
+        /*
+         * Retrieve tag key string
+         * @return tag key string
+         */
+        public string GetKey()
+        {
+            return key;
+        }
+
+        /*
+         * Retrieve tag type
+         * @return tag type
+         */
+        public JSONTagType GetTagType()
+        {
+            return type;
         }
 
         /*
@@ -322,7 +495,7 @@ namespace JSON
          * @param Tab JSON syntax tab amount (default: 0)
          * @return JSON style string representing a tag
          */
-        public override string Serialize(uint Tab = 0)
+        public string Serialize(uint Tab = 0)
         {
             uint tabIter;
             StringBuilder stream = new StringBuilder();
@@ -337,9 +510,18 @@ namespace JSON
                 stream.Append((char)JSONDefines.JSONSymbolType.StringDelimiter + Key + (char)JSONDefines.JSONSymbolType.StringDelimiter
                     + (char)JSONDefines.JSONSymbolType.PairSeperator + (char)JSONDefines.JSONWhitespaceType.Space);
             }
-            stream.Append((Value ? JSONDefines.BOOLTRUE : JSONDefines.BOOLFALSE));
+            stream.Append(Value.ToString().ToLower());
 
             return stream.ToString();
+        }
+
+        /*
+         * Set tag key string
+         * @param Key tag key string
+         */
+        public void SetKey(string Key)
+        {
+            key = Key;
         }
 
         /*
@@ -352,6 +534,23 @@ namespace JSON
         }
 
         /*
+         * Tag key
+         */
+        public string Key
+        {
+            get { return key; }
+            set { key = value; }
+        }
+
+        /*
+         * Tag type
+         */
+        public JSONTagType Type
+        {
+            get { return type; }
+        }
+
+        /*
          * Tag value
          */
         public bool Value
@@ -360,6 +559,8 @@ namespace JSON
             set { objectValue = value; }
         }
 
+        private string key;
+        private JSONTagType type;
         private bool objectValue;
     }
 
@@ -369,7 +570,7 @@ namespace JSON
      * Holds a double value
      * Syntax "<key>" : <double>
      */
-    public class JSONNumberTag : JSONTag
+    public class JSONNumberTag : IJSONTag
     {
 
         /*
@@ -377,8 +578,9 @@ namespace JSON
          * @param Key tag key string
          */
         public JSONNumberTag(string Key)
-            : base(Key, JSONTagType.Number)
         {
+            key = Key;
+            type = JSONTagType.Number;
             objectValue = 0.0;
         }
 
@@ -388,9 +590,131 @@ namespace JSON
          * @param Value tag type
          */
         public JSONNumberTag(string Key, double Value)
-            : base(Key, JSONTagType.Number)
         {
+            key = Key;
+            type = JSONTagType.Number;
             objectValue = Value;
+        }
+
+        /*
+         * Array indexer overload
+         * @param Index array index
+         */
+        public IJSONTag this[int Index]
+        {
+            get
+            {
+                throw new JSONException(
+                    JSONException.JSONExceptionType.NotTypeArray,
+                    type.ToString()
+                    );
+            }
+
+            set
+            {
+                throw new JSONException(
+                    JSONException.JSONExceptionType.NotTypeArray,
+                    type.ToString()
+                    );
+            }
+        }
+
+        /*
+         * Object indexer overload
+         * @param Key key string
+         */
+        public IJSONTag this[string Key]
+        {
+            get
+            {
+                throw new JSONException(
+                    JSONException.JSONExceptionType.NotTypeObject,
+                    type.ToString()
+                    );
+            }
+
+            set
+            {
+                throw new JSONException(
+                    JSONException.JSONExceptionType.NotTypeObject,
+                    type.ToString()
+                    );
+            }
+        }
+
+        /*
+         * Retrieve array tag value
+         * @return array tag value
+         */
+        public JSONArrayTag AsArray()
+        {
+            throw new JSONException(
+                JSONException.JSONExceptionType.NotTypeArray,
+                type.ToString()
+                );
+        }
+
+        /*
+         * Retrieve boolean tag value
+         * @return boolean tag value
+         */
+        public bool AsBoolean()
+        {
+            throw new JSONException(
+                JSONException.JSONExceptionType.NotTypeBoolean,
+                type.ToString()
+                );
+        }
+
+        /*
+         * Retrieve number tag value
+         * @return number tag value
+         */
+        public double AsNumber()
+        {
+            return this.Value;
+        }
+
+        /*
+         * Retrieve object tag value
+         * @return object tag value
+         */
+        public JSONObjectTag AsObject()
+        {
+            throw new JSONException(
+                JSONException.JSONExceptionType.NotTypeObject,
+                type.ToString()
+                );
+        }
+
+        /*
+         * Retrieve string tag value
+         * @return string tag value
+         */
+        public string AsString()
+        {
+            throw new JSONException(
+                JSONException.JSONExceptionType.NotTypeString,
+                type.ToString()
+                );
+        }
+
+        /*
+         * Retrieve tag key string
+         * @return tag key string
+         */
+        public string GetKey()
+        {
+            return key;
+        }
+
+        /*
+         * Retrieve tag type
+         * @return tag type
+         */
+        public JSONTagType GetTagType()
+        {
+            return type;
         }
 
         /*
@@ -398,7 +722,7 @@ namespace JSON
          * @param Tab JSON syntax tab amount (default: 0)
          * @return JSON style string representing a tag
          */
-        public override string Serialize(uint Tab = 0)
+        public string Serialize(uint Tab = 0)
         {
             uint tabIter;
             StringBuilder stream = new StringBuilder();
@@ -419,12 +743,38 @@ namespace JSON
         }
 
         /*
+         * Set tag key string
+         * @param Key tag key string
+         */
+        public void SetKey(string Key)
+        {
+            key = Key;
+        }
+
+        /*
          * JSON number tag string representation
          * @return number tag string representation
          */
         public override string ToString()
         {
             return Serialize();
+        }
+
+        /*
+         * Tag key
+         */
+        public string Key
+        {
+            get { return key; }
+            set { key = value; }
+        }
+
+        /*
+         * Tag type
+         */
+        public JSONTagType Type
+        {
+            get { return type; }
         }
 
         /*
@@ -436,6 +786,8 @@ namespace JSON
             set { objectValue = value; }
         }
 
+        private string key;
+        private JSONTagType type;
         private double objectValue;
     }
 
@@ -445,7 +797,7 @@ namespace JSON
      * Holds an object value
      * Syntax "<key>" : { <pair_list> }
      */
-    public class JSONObjectTag : JSONTag
+    public class JSONObjectTag : Dictionary<string, IJSONTag>, IJSONTag
     {
 
         /*
@@ -453,9 +805,9 @@ namespace JSON
          * @param Key tag key string
          */
         public JSONObjectTag(string Key)
-            : base(Key, JSONTagType.Object)
         {
-            objectMap = new Dictionary<string, JSONTag>();
+            key = Key;
+            type = JSONTagType.Object;
         }
 
         /*
@@ -463,10 +815,113 @@ namespace JSON
          * @param Key tag key string
          * @param Value tag type
          */
-        public JSONObjectTag(string Key, Dictionary<string, JSONTag> Value)
-            : base(Key, JSONTagType.Object)
+        public JSONObjectTag(string Key, Dictionary<string, IJSONTag> Value)
         {
-            objectMap = Value;
+            key = Key;
+            type = JSONTagType.Object;
+
+            foreach (KeyValuePair<string, IJSONTag> tag in Value)
+            {
+                Add(tag.Key, tag.Value);
+            }
+        }
+
+        /*
+         * Array indexer overload
+         * @param Index array index
+         */
+        public IJSONTag this[int Index]
+        {
+            get
+            {
+                throw new JSONException(
+                    JSONException.JSONExceptionType.NotTypeArray,
+                    type.ToString()
+                    );
+            }
+
+            set
+            {
+                throw new JSONException(
+                    JSONException.JSONExceptionType.NotTypeArray,
+                    type.ToString()
+                    );
+            }
+        }
+
+        /*
+         * Retrieve array tag value
+         * @return array tag value
+         */
+        public JSONArrayTag AsArray()
+        {
+            throw new JSONException(
+                JSONException.JSONExceptionType.NotTypeArray,
+                type.ToString()
+                );
+        }
+
+        /*
+         * Retrieve boolean tag value
+         * @return boolean tag value
+         */
+        public bool AsBoolean()
+        {
+            throw new JSONException(
+                JSONException.JSONExceptionType.NotTypeBoolean,
+                type.ToString()
+                );
+        }
+
+        /*
+         * Retrieve number tag value
+         * @return number tag value
+         */
+        public double AsNumber()
+        {
+            throw new JSONException(
+                JSONException.JSONExceptionType.NotTypeNumber,
+                type.ToString()
+                );
+        }
+
+        /*
+         * Retrieve object tag value
+         * @return object tag value
+         */
+        public JSONObjectTag AsObject()
+        {
+            return this;
+        }
+
+        /*
+         * Retrieve string tag value
+         * @return string tag value
+         */
+        public string AsString()
+        {
+            throw new JSONException(
+                JSONException.JSONExceptionType.NotTypeString,
+                type.ToString()
+                );
+        }
+
+        /*
+         * Retrieve tag key string
+         * @return tag key string
+         */
+        public string GetKey()
+        {
+            return key;
+        }
+
+        /*
+         * Retrieve tag type
+         * @return tag type
+         */
+        public JSONTagType GetTagType()
+        {
+            return type;
         }
 
         /*
@@ -474,7 +929,7 @@ namespace JSON
          * @param Tab JSON syntax tab amount (default: 0)
          * @return JSON style string representing a tag
          */
-        public override string Serialize(uint Tab = 0)
+        public string Serialize(uint Tab = 0)
         {
             uint tabIter;
             bool firstIter = true;
@@ -492,12 +947,12 @@ namespace JSON
             }
             stream.Append((char)JSONDefines.JSONSymbolType.ObjectOpen);
 
-            if (Value.Count > 0)
+            if (Count > 0)
             {
                 stream.Append((char)JSONDefines.JSONWhitespaceType.LineFeed);
             }
 
-            foreach (KeyValuePair<string, JSONTag> tag in Value)
+            foreach (KeyValuePair<string, IJSONTag> tag in this)
             {
                 if (!firstIter)
                 {
@@ -510,7 +965,7 @@ namespace JSON
                 stream.Append(tag.Value.Serialize(Tab + 1));
             }
 
-            if (Value.Count > 0)
+            if (Count > 0)
             {
                 stream.Append((char)JSONDefines.JSONWhitespaceType.LineFeed);
 
@@ -525,6 +980,15 @@ namespace JSON
         }
 
         /*
+         * Set tag key string
+         * @param Key tag key string
+         */
+        public void SetKey(string Key)
+        {
+            key = Key;
+        }
+
+        /*
          * JSON object tag string representation
          * @return object tag string representation
          */
@@ -534,15 +998,24 @@ namespace JSON
         }
 
         /*
-         * Tag value
+         * Tag key
          */
-        public Dictionary<string, JSONTag> Value
+        public string Key
         {
-            get { return objectMap; }
-            set { objectMap = value; }
+            get { return key; }
+            set { key = value; }
         }
 
-        private Dictionary<string, JSONTag> objectMap;
+        /*
+         * Tag type
+         */
+        public JSONTagType Type
+        {
+            get { return type; }
+        }
+
+        private string key;
+        private JSONTagType type;
     }
 
     /*
@@ -551,7 +1024,7 @@ namespace JSON
      * Holds a string value
      * Syntax "<key>" : "<value>"
      */
-    public class JSONStringTag : JSONTag
+    public class JSONStringTag : IJSONTag
     {
 
         /*
@@ -559,9 +1032,10 @@ namespace JSON
          * @param Key tag key string
          */
         public JSONStringTag(string Key)
-            : base(Key, JSONTagType.String)
         {
-            return;
+            key = Key;
+            type = JSONTagType.String;
+            objectValue = string.Empty;
         }
 
         /*
@@ -570,9 +1044,131 @@ namespace JSON
          * @param Value tag type
          */
         public JSONStringTag(string Key, string Value)
-            : base(Key, JSONTagType.String)
         {
+            key = Key;
+            type = JSONTagType.String;
             objectValue = Value;
+        }
+
+        /*
+         * Array indexer overload
+         * @param Index array index
+         */
+        public IJSONTag this[int Index]
+        {
+            get
+            {
+                throw new JSONException(
+                    JSONException.JSONExceptionType.NotTypeArray,
+                    type.ToString()
+                    );
+            }
+
+            set
+            {
+                throw new JSONException(
+                    JSONException.JSONExceptionType.NotTypeArray,
+                    type.ToString()
+                    );
+            }
+        }
+
+        /*
+         * Object indexer overload
+         * @param Key key string
+         */
+        public IJSONTag this[string Key]
+        {
+            get
+            {
+                throw new JSONException(
+                    JSONException.JSONExceptionType.NotTypeObject,
+                    type.ToString()
+                    );
+            }
+
+            set
+            {
+                throw new JSONException(
+                    JSONException.JSONExceptionType.NotTypeObject,
+                    type.ToString()
+                    );
+            }
+        }
+
+        /*
+         * Retrieve array tag value
+         * @return array tag value
+         */
+        public JSONArrayTag AsArray()
+        {
+            throw new JSONException(
+                JSONException.JSONExceptionType.NotTypeArray,
+                type.ToString()
+                );
+        }
+
+        /*
+         * Retrieve boolean tag value
+         * @return boolean tag value
+         */
+        public bool AsBoolean()
+        {
+            throw new JSONException(
+                JSONException.JSONExceptionType.NotTypeBoolean,
+                type.ToString()
+                );
+        }
+
+        /*
+         * Retrieve number tag value
+         * @return number tag value
+         */
+        public double AsNumber()
+        {
+            throw new JSONException(
+                JSONException.JSONExceptionType.NotTypeNumber,
+                type.ToString()
+                );
+        }
+
+        /*
+         * Retrieve object tag value
+         * @return object tag value
+         */
+        public JSONObjectTag AsObject()
+        {
+            throw new JSONException(
+                JSONException.JSONExceptionType.NotTypeObject,
+                type.ToString()
+                );
+        }
+
+        /*
+         * Retrieve string tag value
+         * @return string tag value
+         */
+        public string AsString()
+        {
+            return this.Value;
+        }
+
+        /*
+         * Retrieve tag key string
+         * @return tag key string
+         */
+        public string GetKey()
+        {
+            return key;
+        }
+
+        /*
+         * Retrieve tag type
+         * @return tag type
+         */
+        public JSONTagType GetTagType()
+        {
+            return type;
         }
 
         /*
@@ -580,7 +1176,7 @@ namespace JSON
          * @param Tab JSON syntax tab amount (default: 0)
          * @return JSON style string representing a tag
          */
-        public override string Serialize(uint Tab = 0)
+        public string Serialize(uint Tab = 0)
         {
             uint tabIter;
             StringBuilder stream = new StringBuilder();
@@ -601,12 +1197,38 @@ namespace JSON
         }
 
         /*
+         * Set tag key string
+         * @param Key tag key string
+         */
+        public void SetKey(string Key)
+        {
+            key = Key;
+        }
+
+        /*
          * JSON string tag string representation
          * @return string tag string representation
          */
         public override string ToString()
         {
             return Serialize();
+        }
+
+        /*
+         * Tag key
+         */
+        public string Key
+        {
+            get { return key; }
+            set { key = value; }
+        }
+
+        /*
+         * Tag type
+         */
+        public JSONTagType Type
+        {
+            get { return type; }
         }
 
         /*
@@ -618,6 +1240,8 @@ namespace JSON
             set { objectValue = value; }
         }
 
+        private string key;
+        private JSONTagType type;
         private string objectValue;
     }
 }

@@ -654,16 +654,10 @@ namespace JSON
                 }
                 newToken.Text += GetCharacter();
             }
+            newToken.SubType = newToken.Text;
 
-            if (newToken.Text.Equals(JSONDefines.BOOLFALSE))
-            {
-                newToken.SubType = JSONDefines.BOOLFALSE;
-            }
-            else if (newToken.Text.Equals(JSONDefines.BOOLTRUE))
-            {
-                newToken.SubType = JSONDefines.BOOLTRUE;
-            }
-            else
+            if (!newToken.Text.Equals("false")
+                && !newToken.Text.Equals("true"))
             {
                 throw new JSONException(
                     JSONException.JSONExceptionType.ExpectingBoolean,
@@ -887,6 +881,11 @@ namespace JSON
             return GetToken(tokenPosition);
         }
 
+        /*
+         * Retrieve token at a specified position
+         * @param Position token position (0 <= Position < TokenList.Length)
+         * @return token at a specified position
+         */
         public JSONToken GetToken(int Position)
         {
             if ((Position < 0) || (Position >= tokenList.Count))

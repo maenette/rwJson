@@ -37,7 +37,6 @@ namespace JSON
         public enum JSONExceptionType
         {
             CharacterOutOfBounds = 0,               // character exceeds max character in stream
-            EntryNotUnique,                         // entry is not unique
             ExpectingArrayTagCloseBrace,            // expecting array tag close brace
             ExpectingArrayTagOpenBrace,             // expecting array tag open brace
             ExpectingBoolean,                       // expecting boolean string
@@ -50,6 +49,9 @@ namespace JSON
             ExpectingSymbol,                        // expecting symbol character
             ExpectingToken,                         // expecting tokanizable character
             FileException,                          // generic file io exception occurred
+            InvalidKey,                             // invalid key string
+            KeyNotFound,                            // key not found
+            KeyNotUnique,                           // key is not unique
             NoNextCharacter,                        // no next character exists in character stream
             NoNextToken,                            // no next token exists in token stream
             NoPreviousCharacter,                    // no previous character exists in character stream
@@ -59,7 +61,6 @@ namespace JSON
             NotTypeNumber,                          // not number tag type
             NotTypeObject,                          // not object tag type
             NotTypeString,                          // not string tag type
-            ObjectNotFound,                         // object not found
             RowOutOfBounds,                         // character row does not exist
             TokenAlreadyExists,                     // token already exists
             TokenNotFound,                          // token does not exist
@@ -110,7 +111,8 @@ namespace JSON
 #if DEBUG
                 "[" + JSONDefines.LIBNAME + "] " +
 #endif // DEBUG
-                Type.ToString() + ": " + Message, InnerException
+                Type.ToString() + ": " + Message, 
+                InnerException
                 )
         {
             return;

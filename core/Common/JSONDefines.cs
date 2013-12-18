@@ -38,7 +38,7 @@ namespace JSON
          * key ::= <string>
          * number ::= [0-9]+(\.[0-9]*)?
          * object ::= <ws>\{(<pair_list>|<empty>)\}<ws>
-         * pair ::= <ws><string><ws>\:<ws><value><ws>
+         * pair ::= <ws><key><ws>\:<ws><value><ws>
          * pair_list ::= <pair>(,<pair_list>)?
          * string ::= \".*\"
          * value ::= <array>|<boolean>|<number>|<object>|<string>|<empty>
@@ -74,12 +74,10 @@ namespace JSON
         /*
          * JSON Constants
          */
-        public const string BOOLFALSE = "false";    // boolean false
-        public const string BOOLTRUE = "true";      // boolean true
         public const string LIBNAME = "JSON";       // library name
         public const uint LIBMAJOR = 0;             // major version
         public const uint LIBMINOR = 1;             // minor version
-        public const uint LIBREVISION = 4;          // revision
+        public const uint LIBREVISION = 5;          // revision
         public const uint LIBWORKWEEK = 1351;       // year/workweek
 
 

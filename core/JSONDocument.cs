@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace JSON
 {
@@ -40,6 +41,17 @@ namespace JSON
         public JSONDocument(bool IsOverridable)
         {
             isOverridable = IsOverridable;
+        }
+
+        /*
+         * JSON document constructor
+         * @param Path JSON file path
+         * @param IsOverridable determine if input is overridable
+         */
+        public JSONDocument(string Path, bool IsOverridable)
+        {
+            isOverridable = IsOverridable;
+            ReadAppend(ExtractKey(Path), Path, true);
         }
 
         /*
@@ -65,6 +77,43 @@ namespace JSON
         }
 
         /*
+         * Extract key from JSON file path
+         * @param Input JSON file path
+         * @return JSON file path
+         */
+        private string ExtractKey(string Input)
+        {
+            Match keyMatch;
+            string key = string.Empty;
+
+            keyMatch = Regex.Match(Input, filePattern, RegexOptions.IgnoreCase);
+
+            if (keyMatch.Success)
+            {
+                key = keyMatch.Groups[1].Value;
+            }
+
+            if (key.Equals(string.Empty))
+            {
+                throw new JSONException(
+                    JSONException.JSONExceptionType.InvalidKey,
+                    "\'" + key + "\'"
+                    );
+            }
+
+            return key;
+        }
+
+        /*
+         * Read in JSON file
+         * @param Path JSON file path
+         */
+        public void Read(string Path)
+        {
+            Read(ExtractKey(Path), Path, true);
+        }
+
+        /*
          * Read in JSON data or file
          * @param Key JSON key string
          * @param Input JSON data or file path
@@ -74,6 +123,15 @@ namespace JSON
         {
             Clear();
             ReadAppend(Key, Input, IsFile);
+        }
+
+        /*
+         * Read and append JSON file
+         * @param Path JSON file path
+         */
+        public void ReadAppend(string Path)
+        {
+            ReadAppend(ExtractKey(Path), Path, true);
         }
 
         /*
@@ -91,7 +149,7 @@ namespace JSON
                 if (!isOverridable)
                 {
                     throw new JSONException(
-                        JSONException.JSONExceptionType.EntryNotUnique,
+                        JSONException.JSONExceptionType.KeyNotUnique,
                         "\'" + Key + "\'"
                         );
                 }
@@ -115,12 +173,23 @@ namespace JSON
             if (!TryGetValue(Key, out objectTag))
             {
                 throw new JSONException(
-                    JSONException.JSONExceptionType.ObjectNotFound,
+                    JSONException.JSONExceptionType.KeyNotFound,
                     "\'" + Key + "\'"
                     );
             }
 
             return objectTag.ToString();
+        }
+
+        /*
+         * Validate JSON file
+         * @param Path JSON file path
+         * @param InException optional user supplied exception object (filled upon exception, null otherwise)
+         * @return true if successful, false otherwise
+         */
+        static public bool Validate(string Path, out Exception InException)
+        {
+            return Validate(Path, true, out InException);
         }
 
         /*
@@ -162,7 +231,7 @@ namespace JSON
             if (!TryGetValue(Key, out objectTag))
             {
                 throw new JSONException(
-                    JSONException.JSONExceptionType.ObjectNotFound,
+                    JSONException.JSONExceptionType.KeyNotFound,
                     "\'" + Key + "\'"
                     );
             }
@@ -192,5 +261,6 @@ namespace JSON
         }
 
         private bool isOverridable;
+        private static string filePattern = @".*\\([_\-a-zA-Z0-9]+)\.json$";
     }
 }
