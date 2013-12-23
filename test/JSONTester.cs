@@ -34,7 +34,7 @@ class TestClass
             // retrieve key-value pairs from json object
             Console.WriteLine("NAME: " + doc["test"]["firstName"].AsString() + " " + doc["test"]["lastName"].AsString());
             Console.WriteLine("HOMEPHONE: " + doc["test"]["phoneNumbers"][0]["number"].AsString());
-            Console.WriteLine("AGE: " + doc["test"]["age"].AsNumber());
+            Console.WriteLine("AGE: " + doc["test"]["age"].AsInteger() + " (" + doc["test"]["age"].AsFloat() + ")");
 
             // print out json file contents
             System.Console.WriteLine(doc.ToString("test"));

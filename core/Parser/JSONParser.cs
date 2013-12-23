@@ -286,7 +286,7 @@ namespace JSON
             IJSONTag newTag;
             bool newTagBoolValue;
             JSONToken currentToken;
-            double newTagDoubleValue;
+            float newTagFloatValue;
             string newTagKey = string.Empty;
 
             if (!SkipKey)
@@ -311,14 +311,14 @@ namespace JSON
                     break;
                 case JSONToken.JSONTokenType.Number:
 
-                    if (!Double.TryParse(currentToken.Text, out newTagDoubleValue))
+                    if (!Single.TryParse(currentToken.Text, out newTagFloatValue))
                     {
                         throw new JSONException(
                             JSONException.JSONExceptionType.ExpectingNumericValue,
                             currentToken.ToString()
                             );
                     }
-                    newTag = new JSONNumberTag(newTagKey, newTagDoubleValue);
+                    newTag = new JSONNumberTag(newTagKey, newTagFloatValue);
                     AdvanceToken();
                     break;
                 case JSONToken.JSONTokenType.String:

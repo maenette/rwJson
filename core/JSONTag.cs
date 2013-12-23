@@ -72,7 +72,13 @@ namespace JSON
          * Retrieve number tag value
          * @return number tag value
          */
-        double AsNumber();
+        float AsFloat();
+
+        /*
+         * Retrieve number tag value
+         * @return number tag value
+         */
+        int AsInteger();
 
         /*
          * Retrieve object tag value
@@ -193,7 +199,19 @@ namespace JSON
          * Retrieve number tag value
          * @return number tag value
          */
-        public double AsNumber()
+        public float AsFloat()
+        {
+            throw new JSONException(
+                JSONException.JSONExceptionType.NotTypeNumber,
+                type.ToString()
+                );
+        }
+
+        /*
+         * Retrieve number tag value
+         * @return number tag value
+         */
+        public int AsInteger()
         {
             throw new JSONException(
                 JSONException.JSONExceptionType.NotTypeNumber,
@@ -440,7 +458,19 @@ namespace JSON
          * Retrieve number tag value
          * @return number tag value
          */
-        public double AsNumber()
+        public float AsFloat()
+        {
+            throw new JSONException(
+                JSONException.JSONExceptionType.NotTypeNumber,
+                type.ToString()
+                );
+        }
+
+        /*
+         * Retrieve number tag value
+         * @return number tag value
+         */
+        public int AsInteger()
         {
             throw new JSONException(
                 JSONException.JSONExceptionType.NotTypeNumber,
@@ -567,8 +597,8 @@ namespace JSON
     /*
      * JSON number tag class
      * ---------------------
-     * Holds a double value
-     * Syntax "<key>" : <double>
+     * Holds a float value
+     * Syntax "<key>" : <float>
      */
     public class JSONNumberTag : IJSONTag
     {
@@ -581,15 +611,15 @@ namespace JSON
         {
             key = Key;
             type = JSONTagType.Number;
-            objectValue = 0.0;
+            objectValue = 0.0F;
         }
 
         /*
-         * JSON boolean tag constructor
+         * JSON number tag constructor
          * @param Key tag key string
          * @param Value tag type
          */
-        public JSONNumberTag(string Key, double Value)
+        public JSONNumberTag(string Key, float Value)
         {
             key = Key;
             type = JSONTagType.Number;
@@ -670,9 +700,18 @@ namespace JSON
          * Retrieve number tag value
          * @return number tag value
          */
-        public double AsNumber()
+        public float AsFloat()
         {
             return this.Value;
+        }
+
+        /*
+         * Retrieve number tag value
+         * @return number tag value
+         */
+        public int AsInteger()
+        {
+            return (int)this.Value;
         }
 
         /*
@@ -780,7 +819,7 @@ namespace JSON
         /*
          * Tag value
          */
-        public double Value
+        public float Value
         {
             get { return objectValue; }
             set { objectValue = value; }
@@ -788,7 +827,7 @@ namespace JSON
 
         private string key;
         private JSONTagType type;
-        private double objectValue;
+        private float objectValue;
     }
 
     /*
@@ -877,7 +916,19 @@ namespace JSON
          * Retrieve number tag value
          * @return number tag value
          */
-        public double AsNumber()
+        public float AsFloat()
+        {
+            throw new JSONException(
+                JSONException.JSONExceptionType.NotTypeNumber,
+                type.ToString()
+                );
+        }
+
+        /*
+         * Retrieve number tag value
+         * @return number tag value
+         */
+        public int AsInteger()
         {
             throw new JSONException(
                 JSONException.JSONExceptionType.NotTypeNumber,
@@ -1124,7 +1175,19 @@ namespace JSON
          * Retrieve number tag value
          * @return number tag value
          */
-        public double AsNumber()
+        public float AsFloat()
+        {
+            throw new JSONException(
+                JSONException.JSONExceptionType.NotTypeNumber,
+                type.ToString()
+                );
+        }
+
+        /*
+         * Retrieve number tag value
+         * @return number tag value
+         */
+        public int AsInteger()
         {
             throw new JSONException(
                 JSONException.JSONExceptionType.NotTypeNumber,

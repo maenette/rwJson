@@ -77,7 +77,7 @@ namespace JSON
         public const string LIBNAME = "JSON";       // library name
         public const uint LIBMAJOR = 0;             // major version
         public const uint LIBMINOR = 1;             // minor version
-        public const uint LIBREVISION = 5;          // revision
+        public const uint LIBREVISION = 6;          // revision
         public const uint LIBWORKWEEK = 1351;       // year/workweek
 
 
