@@ -3,7 +3,7 @@ JSON
 
 A small JSON library, written in C#, capable of reading and writing JSON files.
 
-###Version 0.1.1351.06
+###Version 0.1.1352.01
 Updated: 12/23/2013
 
 * JSON number tags now hold float (Single) values, instead of doubles
