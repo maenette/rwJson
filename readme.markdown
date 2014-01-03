@@ -3,6 +3,11 @@ JSON
 
 A small JSON library, written in C#, capable of reading and writing JSON files.
 
+###Version 0.1.1401.02
+Updated: 01/02/2013
+
+* ExtractKey() function now publicly accessible in JSONDocument
+
 ###Version 0.1.1401.01
 Updated: 01/02/2013
 

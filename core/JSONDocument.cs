@@ -81,7 +81,7 @@ namespace JSON
          * @param Input JSON file path
          * @return JSON file path
          */
-        private string ExtractKey(string Input)
+        public static string ExtractKey(string Input)
         {
             Match keyMatch;
             string key = string.Empty;

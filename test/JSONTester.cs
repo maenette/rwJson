@@ -24,23 +24,27 @@ class TestClass
 {
     static void Main(string[] args)
     {
+        string key, path = "..\\..\\test\\test.json";
+
         System.Console.WriteLine(JSONDefines.LIBNAME + " " + JSONDefines.LibraryVersion());
 
         try
         {
-            // read in a json file
-            JSONDocument doc = new JSONDocument("..\\..\\test\\test.json", false);
+
+            // read in a json file/retrieve key
+            JSONDocument doc = new JSONDocument(path, false);
+            key = JSONDocument.ExtractKey(path);
 
             // retrieve key-value pairs from json object
-            Console.WriteLine("NAME: " + doc["test"]["firstName"].AsString() + " " + doc["test"]["lastName"].AsString());
-            Console.WriteLine("HOMEPHONE: " + doc["test"]["phoneNumbers"][0]["number"].AsString());
-            Console.WriteLine("AGE: " + doc["test"]["age"].AsInteger() + " (" + doc["test"]["age"].AsFloat() + ")");
+            Console.WriteLine("NAME: " + doc[key]["firstName"].AsString() + " " + doc[key]["lastName"].AsString());
+            Console.WriteLine("HOMEPHONE: " + doc[key]["phoneNumbers"][0]["number"].AsString());
+            Console.WriteLine("AGE: " + doc[key]["age"].AsInteger() + " (" + doc[key]["age"].AsFloat() + ")");
 
             // print out json file contents
-            System.Console.WriteLine(doc.ToString("test"));
+            System.Console.WriteLine(doc.ToString(key));
 
             // write json contents to new json file
-            //doc.Write("test", "..\\..\\test\\test_copy.json");
+            //doc.Write(key, "..\\..\\test\\test_copy.json");
         }
         catch (JSONException exception)
         {
