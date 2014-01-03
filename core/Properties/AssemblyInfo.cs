@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("David Jolly")]
 [assembly: AssemblyProduct("json.dll")]
-[assembly: AssemblyCopyright("Copyright ©  2013 David Jolly")]
+[assembly: AssemblyCopyright("Copyright ©  2013-2014 David Jolly")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -29,5 +29,5 @@ using System.Runtime.InteropServices;
 //      Build Number
 //      Revision
 //
-[assembly: AssemblyVersion("0.1.1352.1")]
-[assembly: AssemblyFileVersion("0.1.1352.1")]
+[assembly: AssemblyVersion("0.1.1401.1")]
+[assembly: AssemblyFileVersion("0.1.1401.1")]
