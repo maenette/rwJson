@@ -3,6 +3,11 @@ JSON
 
 A small JSON library, written in C#, capable of reading and writing JSON files.
 
+###Version 0.1.1401.01
+Updated: 01/02/2013
+
+* Updated file headers to reflect new year
+
 ###Version 0.1.1352.01
 Updated: 12/23/2013
 
@@ -69,7 +74,7 @@ Example
 License
 ======
 
-Copyright(C) 2013 David Jolly <majestic53@gmail.com>
+Copyright(C) 2013-2014 David Jolly <majestic53@gmail.com>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Lesser General Public License as published by
