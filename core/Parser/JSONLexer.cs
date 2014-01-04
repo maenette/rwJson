@@ -814,6 +814,9 @@ namespace JSON
 
                     switch (GetCharacter())
                     {
+                        case (char)JSONDefines.JSONSymbolType.Negative:
+                            newToken = EnumerateNumber();
+                            break;
                         case (char)JSONDefines.JSONSymbolType.StringDelimiter:
                             newToken = EnumerateString();
                             break;

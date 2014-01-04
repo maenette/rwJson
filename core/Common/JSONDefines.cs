@@ -53,6 +53,7 @@ namespace JSON
             ArrayClose = ']',                       // close array bracket character
             ArrayOpen = '[',                        // open array bracket character
             Decimal = '.',                          // decimal point character
+            Negative = '-',                         // negative value character
             ObjectClose = '}',                      // close object bracket character
             ObjectOpen = '{',                       // open object bracket character
             PairDelimiter = ',',                    // key/value pair delimiter character
