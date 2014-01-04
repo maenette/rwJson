@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Text;
 
 namespace JSON
 {
@@ -36,7 +37,7 @@ namespace JSON
          * array ::= \[(<pair_list>|<empty>)\]
          * boolean ::= true|false
          * key ::= <string>
-         * number ::= [0-9]+(\.[0-9]*)?
+         * number ::= (-)?[0-9]+(\.[0-9]*)?
          * object ::= <ws>\{(<pair_list>|<empty>)\}<ws>
          * pair ::= <ws><key><ws>\:<ws><value><ws>
          * pair_list ::= <pair>(,<pair_list>)?
@@ -73,22 +74,35 @@ namespace JSON
         }
 
         /*
+         * JSON File Constants
+         */
+        public const string KEYPATTERN = @".*\\([_\-a-zA-Z0-9]+)\.json$";
+
+        /*
          * JSON Constants
          */
         public const string LIBNAME = "JSON";       // library name
         public const uint LIBMAJOR = 0;             // major version
         public const uint LIBMINOR = 1;             // minor version
-        public const uint LIBREVISION = 3;          // revision
+        public const uint LIBREVISION = 4;          // revision
         public const uint LIBWORKWEEK = 1401;       // year/workweek
-
 
         /*
          * Retrieve JSON library version
+         * @param ShowTitle show library title (default: false)
          * @return JSON library version string (Syntax: MM.mm.YYWW.rr)
          */
-        public static string LibraryVersion()
+        public static string LibraryVersion(bool ShowTitle = false)
         {
-            return LIBMAJOR + "." + LIBMINOR + "." + LIBWORKWEEK + "." + LIBREVISION;
+            StringBuilder stream = new StringBuilder();
+
+            if (ShowTitle)
+            {
+                stream.Append(LIBNAME + " ");
+            }
+            stream.Append(LIBMAJOR + "." + LIBMINOR + "." + LIBWORKWEEK + "." + LIBREVISION);
+
+            return stream.ToString();
         }
     }
 }

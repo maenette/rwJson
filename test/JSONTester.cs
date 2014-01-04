@@ -26,13 +26,12 @@ class TestClass
     {
         string key, path = "..\\..\\test\\test.json";
 
-        System.Console.WriteLine(JSONDefines.LIBNAME + " " + JSONDefines.LibraryVersion());
+        System.Console.WriteLine(JSONDefines.LibraryVersion(true));
 
         try
         {
-
             // read in a json file/retrieve key
-            JSONDocument doc = new JSONDocument(path, false);
+            JSONDocument doc = new JSONDocument(false, path);
             key = JSONDocument.ExtractKey(path);
 
             // retrieve key-value pairs from json object
@@ -50,7 +49,6 @@ class TestClass
         {
             Console.WriteLine("EXCEPTION: " + exception.Message);
         }
-
         System.Console.ReadLine();
     }
 }

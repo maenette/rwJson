@@ -45,10 +45,10 @@ namespace JSON
 
         /*
          * JSON document constructor
-         * @param Path JSON file path
          * @param IsOverridable determine if input is overridable
+         * @param Path JSON file path
          */
-        public JSONDocument(string Path, bool IsOverridable)
+        public JSONDocument(bool IsOverridable, string Path)
         {
             isOverridable = IsOverridable;
             ReadAppend(ExtractKey(Path), Path, true);
@@ -56,12 +56,12 @@ namespace JSON
 
         /*
          * JSON document constructor
+         * @param IsOverridable determine if input is overridable
          * @param Key JSON key string
          * @param Input JSON data or file path
          * @param IsFile determine if input in a file path
-         * @param IsOverridable determine if input is overridable
          */
-        public JSONDocument(string Key, string Input, bool IsFile, bool IsOverridable)
+        public JSONDocument(bool IsOverridable, string Key, string Input, bool IsFile)
         {
             isOverridable = IsOverridable;
             ReadAppend(Key, Input, IsFile);
@@ -86,7 +86,7 @@ namespace JSON
             Match keyMatch;
             string key = string.Empty;
 
-            keyMatch = Regex.Match(Input, filePattern, RegexOptions.IgnoreCase);
+            keyMatch = Regex.Match(Input, JSONDefines.KEYPATTERN, RegexOptions.IgnoreCase);
 
             if (keyMatch.Success)
             {
@@ -261,6 +261,5 @@ namespace JSON
         }
 
         private bool isOverridable;
-        private static string filePattern = @".*\\([_\-a-zA-Z0-9]+)\.json$";
     }
 }
