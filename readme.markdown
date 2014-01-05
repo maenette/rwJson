@@ -3,8 +3,8 @@ JSON
 
 A small JSON library, written in C#, capable of reading and writing JSON files.
 
-###Version 0.1.1401.01 - 0.1.1401.04
-Updated: 01/02/2013 - 01/03/2013
+###Version 0.1.1401.01 - 0.1.1401.05
+Updated: 01/02/2013 - 01/04/2013
 
 * JSONNumberTag now supports negative values
 * JSONDocument constructors are now consistent
