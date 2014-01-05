@@ -100,6 +100,18 @@ namespace JSON
             return;
         }
 
+        public JSONException(JSONExceptionType Type, Exception InnerException)
+            : base(
+#if DEBUG
+                "[" + JSONDefines.LIBNAME + "] " +
+#endif // DEBUG
+                Type.ToString() + ": " + InnerException.Message,
+                InnerException
+                )
+        {
+            return;
+        }
+
         /*
          * JSON exception constructor
          * @param Type JSON exception type
@@ -111,7 +123,7 @@ namespace JSON
 #if DEBUG
                 "[" + JSONDefines.LIBNAME + "] " +
 #endif // DEBUG
-                Type.ToString() + ": " + Message, 
+                Type.ToString() + ": " + Message + " (" + InnerException.Message + ")", 
                 InnerException
                 )
         {
