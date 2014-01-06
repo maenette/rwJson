@@ -4,6 +4,7 @@ JSON
 A small JSON library, written in C#, capable of reading and writing JSON files.
 
 ###Version 0.1.1402.01
+Updated: 01/05/2013
 
 * ExtractRootPath() function now publicly accessible in JSONDocument
 * Fixed a bug where JSON files with trailing whitespace might fail to parse
