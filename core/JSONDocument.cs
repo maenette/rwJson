@@ -105,6 +105,26 @@ namespace JSON
         }
 
         /*
+         * Extract root path from JSON file path
+         * @param Input JSON file path
+         * @return JSON file path
+         */
+        public static string ExtractRootPath(string Input)
+        {
+            Match rootPathMatch;
+            string rootPath = string.Empty;
+
+            rootPathMatch = Regex.Match(Input, JSONDefines.ROOTPATHPATTERN, RegexOptions.IgnoreCase);
+
+            if (rootPathMatch.Success)
+            {
+                rootPath = rootPathMatch.Groups[1].Value;
+            }
+
+            return rootPath;
+        }
+
+        /*
          * Read in JSON file
          * @param Path JSON file path
          */

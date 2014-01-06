@@ -434,7 +434,7 @@ namespace JSON
             {
                 stream.Append("\'" + currentCharacter + "\'");
             }
-            stream.Append(" (col. " + characterColumn + ", row. " + characterRow + ", pos. "
+            stream.Append(" [val. " + (byte)currentCharacter + "] (col. " + characterColumn + ", row. " + characterRow + ", pos. "
                 + characterPosition + ")");
 
             return stream.ToString();
@@ -1002,6 +1002,14 @@ namespace JSON
             if (!ExpectEnd && !HasNextToken())
             {
                 throw new JSONException(JSONException.JSONExceptionType.UnexpectedEndOfStream);
+            }
+            else
+            {
+
+                while (HasNextCharacter() && (CharacterType == JSONCharacterType.Whitespace))
+                {
+                    MoveNextCharacter();
+                }
             }
 
             return GetToken();
