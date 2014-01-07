@@ -42,6 +42,12 @@ namespace JSON
             ExpectingBoolean,                       // expecting boolean string
             ExpectingBooleanValue,                  // expecting boolean value string
             ExpectingKeyString,                     // expecting key string
+            ExpectingNamedArrayChildTag,            // expecting named array child tag
+            ExpectingNamedBooleanChildTag,          // expecting named boolean child tag
+            ExpectingNamedNumberChildTag,           // expecting named number child tag
+            ExpectingNamedObjectTag,                // expecting named object tag
+            ExpectingNamedObjectChildTag,           // expecting named object child tag
+            ExpectingNamedStringChildTag,           // expecting named string child tag
             ExpectingNumericValue,                  // expecting numeric value string
             ExpectingObjectTagCloseBracket,         // expecting object tag close bracket
             ExpectingObjectTagOpenBracket,          // expecting object tag open bracket
@@ -50,8 +56,10 @@ namespace JSON
             ExpectingToken,                         // expecting tokanizable character
             FileException,                          // generic file io exception occurred
             InvalidKey,                             // invalid key string
+            InvalidSchemaTagType,                   // invalid schema tag type
             KeyNotFound,                            // key not found
             KeyNotUnique,                           // key is not unique
+            MissingSchemaTag,                       // missing required schema tag
             NoNextCharacter,                        // no next character exists in character stream
             NoNextToken,                            // no next token exists in token stream
             NoPreviousCharacter,                    // no previous character exists in character stream
@@ -62,10 +70,12 @@ namespace JSON
             NotTypeObject,                          // not object tag type
             NotTypeString,                          // not string tag type
             RowOutOfBounds,                         // character row does not exist
+            SchemaMismatch,                         // schema does not match input
             TokenAlreadyExists,                     // token already exists
             TokenNotFound,                          // token does not exist
             TokenOutOfBounds,                       // token exceeds max token in stream
             UnexpectedEndOfStream,                  // unexpected end of stream
+            UnknownSchemaTagType,                   // unknown schema tag type string
             UnterminatedString,                     // unterminated string
         }
 
@@ -76,7 +86,7 @@ namespace JSON
         public JSONException(JSONExceptionType Type)
             : base(
 #if DEBUG
-                "[" + JSONDefines.LIBNAME + "] " +
+                "[" + JSONDefines.LIB_NAME + "] " +
 #endif // DEBUG
                 Type.ToString()
                 )
@@ -92,7 +102,7 @@ namespace JSON
         public JSONException(JSONExceptionType Type, string Message)
             : base(
 #if DEBUG
-                "[" + JSONDefines.LIBNAME + "] " +
+                "[" + JSONDefines.LIB_NAME + "] " +
 #endif // DEBUG
                 Type.ToString() + ": " + Message
                 )
@@ -103,7 +113,7 @@ namespace JSON
         public JSONException(JSONExceptionType Type, Exception InnerException)
             : base(
 #if DEBUG
-                "[" + JSONDefines.LIBNAME + "] " +
+                "[" + JSONDefines.LIB_NAME + "] " +
 #endif // DEBUG
                 Type.ToString() + ": " + InnerException.Message,
                 InnerException
@@ -121,7 +131,7 @@ namespace JSON
         public JSONException(JSONExceptionType Type, string Message, Exception InnerException)
             : base(
 #if DEBUG
-                "[" + JSONDefines.LIBNAME + "] " +
+                "[" + JSONDefines.LIB_NAME + "] " +
 #endif // DEBUG
                 Type.ToString() + ": " + Message + " (" + InnerException.Message + ")", 
                 InnerException

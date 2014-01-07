@@ -1,0 +1,51 @@
+{
+	"@entry": {
+		"firstName": {
+			"@type": "string"
+		},
+		"lastName": {
+			"@type": "string"
+		},
+		"age": {
+			"@type": "integer"
+		},
+		"pi": {
+			"@type": "float"
+		},
+		"address": {
+			"@entry": {
+				"streetAddress": {
+					"@type": "string"
+				},
+				"city": {
+					"@type": "string"
+				},
+				"state": {
+					"@type": "string"
+				},
+				"postalCode": {
+					"@type": "integer"
+				}
+			},
+			"@type": "object"
+		},
+		"phoneNumbers": {
+			"@entry": {
+				"@entry": {
+					"type": {
+						"@type": "string"
+					},
+					"number": {
+						"@type": "string"
+					},
+					"callable": {
+						"@type": "boolean"
+					}
+				},
+				"@type": "object"
+			},
+			"@type": "array"
+		}
+	},
+	"@type": "object"
+}

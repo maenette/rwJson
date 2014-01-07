@@ -24,9 +24,10 @@ class TestClass
 {
     static void Main(string[] args)
     {
-        string key, path = "..\\..\\test\\test.json";
+        Exception schemaResults;
+        string key, path = "..\\..\\test\\test.json", schemaPath = "..\\..\\test\\test.json_schema";
 
-        System.Console.WriteLine(JSONDefines.LibraryVersion(true));
+        Console.WriteLine(JSONDefines.LibraryVersion(true, true));
 
         try
         {
@@ -40,7 +41,10 @@ class TestClass
             Console.WriteLine("AGE: " + doc[key]["age"].AsInteger() + " (" + doc[key]["age"].AsFloat() + ")");
 
             // print out json file contents
-            System.Console.WriteLine(doc.ToString(key));
+            Console.WriteLine(doc.ToString(key));
+
+            // verify json file matches schema file
+            Console.WriteLine(!JSONDocument.ValidateWithSchema(path, schemaPath, out schemaResults) ? schemaResults.Message : "Schema Match");
 
             // write json contents to new json file
             //doc.Write(key, "..\\..\\test\\test_copy.json");
@@ -49,6 +53,6 @@ class TestClass
         {
             Console.WriteLine("EXCEPTION: " + exception.Message);
         }
-        System.Console.ReadLine();
+        Console.ReadLine();
     }
 }

@@ -51,15 +51,15 @@ namespace JSON
          */
         public enum JSONSymbolType
         {
-            ArrayClose = ']',                       // close array bracket character
-            ArrayOpen = '[',                        // open array bracket character
-            Decimal = '.',                          // decimal point character
-            Negative = '-',                         // negative value character
-            ObjectClose = '}',                      // close object bracket character
-            ObjectOpen = '{',                       // open object bracket character
-            PairDelimiter = ',',                    // key/value pair delimiter character
-            PairSeperator = ':',                    // key/value pair seperator character
-            StringDelimiter = '\"',                 // string delimiter character
+            ArrayClose = ']',                                                           // close array bracket character
+            ArrayOpen = '[',                                                            // open array bracket character
+            Decimal = '.',                                                              // decimal point character
+            Negative = '-',                                                             // negative value character
+            ObjectClose = '}',                                                          // close object bracket character
+            ObjectOpen = '{',                                                           // open object bracket character
+            PairDelimiter = ',',                                                        // key/value pair delimiter character
+            PairSeperator = ':',                                                        // key/value pair seperator character
+            StringDelimiter = '\"',                                                     // string delimiter character
         }
 
         /*
@@ -67,41 +67,60 @@ namespace JSON
          */
         public enum JSONWhitespaceType
         {
-            EndOfFile = '\0',                       // end of file character
-            LineFeed = '\n',                        // line feed character
-            Space = ' ',                            // space character
-            Tab = '\t',                             // tab character
+            EndOfFile = '\0',                                                           // end of file character
+            LineFeed = '\n',                                                            // line feed character
+            Space = ' ',                                                                // space character
+            Tab = '\t',                                                                 // tab character
         }
 
         /*
          * JSON File Constants
          */
-        public const string KEYPATTERN = @".*\\([_\-a-zA-Z0-9]+)\.json$";
-        public const string ROOTPATHPATTERN = @"(.*)\\.*.json$";
+        public const string KEY_PATTERN = @".*\\([_\-a-zA-Z0-9]+)\.json$";              // JSON file key regex
+        public const string ROOT_PATH_PATTERN = @"(.*)\\.*.json$";                      // JSON file root path regex
 
         /*
-         * JSON Constants
+         * JSON Schema Constants
          */
-        public const string LIBNAME = "JSON";       // library name
-        public const uint LIBMAJOR = 0;             // major version
-        public const uint LIBMINOR = 1;             // minor version
-        public const uint LIBREVISION = 1;          // revision
-        public const uint LIBWORKWEEK = 1402;       // year/workweek
+        public const string SCHEMA_TAG_ENTRY = "@entry";                               // schema entry tag
+        public const string SCHEMA_TAG_TYPE = "@type";                                 // schema type tag
+        public const string SCHEMA_TAG_ARRAY = "array";                                // schema array tag type
+        public const string SCHEMA_TAG_BOOLEAN = "boolean";                            // schema boolean tag type
+        public const string SCHEMA_TAG_FLOAT = "float";                                // schema float tag type
+        public const string SCHEMA_TAG_INTEGER = "integer";                            // schema integer tag type
+        public const string SCHEMA_TAG_OBJECT = "object";                              // schema object tag type
+        public const string SCHEMA_TAG_STRING = "string";                              // schema string tag type
+
+        /*
+         * JSON Library Constants
+         */
+        public const string LIB_NAME = "JSON Library";                                  // library name
+        public const string LIB_COPYRIGHT = "Copyright (C) 2013-2014 David Jolly";      // library copyright
+        public const uint LIB_MAJOR = 0;                                                // major version
+        public const uint LIB_MINOR = 1;                                                // minor version
+        public const uint LIB_REVISION = 2;                                             // revision
+        public const uint LIB_WORKWEEK = 1402;                                          // year/workweek
 
         /*
          * Retrieve JSON library version
          * @param ShowTitle show library title (default: false)
+         * @param ShowCopyright show library copyright (default: false)
          * @return JSON library version string (Syntax: MM.mm.YYWW.rr)
          */
-        public static string LibraryVersion(bool ShowTitle = false)
+        public static string LibraryVersion(bool ShowTitle = false, bool ShowCopyright = false)
         {
             StringBuilder stream = new StringBuilder();
 
             if (ShowTitle)
             {
-                stream.Append(LIBNAME + " ");
+                stream.Append(LIB_NAME + " ");
             }
-            stream.Append(LIBMAJOR + "." + LIBMINOR + "." + LIBWORKWEEK + "." + LIBREVISION);
+            stream.Append("[v." + LIB_MAJOR + "." + LIB_MINOR + "." + LIB_WORKWEEK + "." + LIB_REVISION + "]");
+
+            if (ShowCopyright)
+            {
+                stream.Append("\n" + LIB_COPYRIGHT);
+            }
 
             return stream.ToString();
         }

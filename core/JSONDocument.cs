@@ -86,7 +86,7 @@ namespace JSON
             Match keyMatch;
             string key = string.Empty;
 
-            keyMatch = Regex.Match(Input, JSONDefines.KEYPATTERN, RegexOptions.IgnoreCase);
+            keyMatch = Regex.Match(Input, JSONDefines.KEY_PATTERN, RegexOptions.IgnoreCase);
 
             if (keyMatch.Success)
             {
@@ -114,7 +114,7 @@ namespace JSON
             Match rootPathMatch;
             string rootPath = string.Empty;
 
-            rootPathMatch = Regex.Match(Input, JSONDefines.ROOTPATHPATTERN, RegexOptions.IgnoreCase);
+            rootPathMatch = Regex.Match(Input, JSONDefines.ROOT_PATH_PATTERN, RegexOptions.IgnoreCase);
 
             if (rootPathMatch.Success)
             {
@@ -182,6 +182,62 @@ namespace JSON
         }
 
         /*
+         * Retrieve schema entry type
+         * @param SchemaTag schema tag object
+         * @return object tag object
+         */
+        static private JSONObjectTag RetrieveSchemaEntryTag(IJSONTag SchemaTag)
+        {
+            IJSONTag unknownTag;
+            JSONObjectTag entryTag;
+
+            try
+            {
+                unknownTag = SchemaTag[JSONDefines.SCHEMA_TAG_ENTRY];
+
+                if (unknownTag.GetTagType() != JSONTagType.Object)
+                {
+                    throw new JSONException(JSONException.JSONExceptionType.InvalidSchemaTagType, unknownTag.GetTagType().ToString());
+                }
+                entryTag = (JSONObjectTag)unknownTag;
+            }
+            catch (Exception exception)
+            {
+                throw new JSONException(JSONException.JSONExceptionType.MissingSchemaTag, JSONDefines.SCHEMA_TAG_ENTRY, exception);
+            }
+
+            return entryTag;
+        }
+
+        /*
+         * Retrieve schema tag type
+         * @param SchemaTag schema tag object
+         * @return string tag object
+         */
+        static private JSONStringTag RetrieveSchemaTypeTag(IJSONTag SchemaTag)
+        {
+            IJSONTag unknownTag;
+            JSONStringTag typeTag;
+
+            try
+            {
+                unknownTag = SchemaTag[JSONDefines.SCHEMA_TAG_TYPE];
+
+                if (unknownTag.GetTagType() != JSONTagType.String)
+                {
+                    throw new JSONException(JSONException.JSONExceptionType.InvalidSchemaTagType, unknownTag.GetTagType().ToString());
+                }
+                typeTag = (JSONStringTag)unknownTag;
+            }
+            catch (Exception exception)
+            {
+                throw new JSONException(JSONException.JSONExceptionType.MissingSchemaTag, JSONDefines.SCHEMA_TAG_TYPE, exception);
+            }
+
+            return typeTag;
+        }
+
+        /*
          * JSON document object string representation
          * @param Key JSON key string
          * @return document object string representation
@@ -215,19 +271,224 @@ namespace JSON
         /*
          * Validate JSON data or file
          * @param Input JSON data or file path
-         * @param IsFile determine if input in a file path
+         * @param IsFile determine if input is a file path
          * @param InException optional user supplied exception object (filled upon exception, null otherwise)
          * @return true if successful, false otherwise
          */
         static public bool Validate(string Input, bool IsFile, out Exception InException)
         {
             bool result = true;
+            JSONParser inputParser;
 
             InException = null;
 
             try
             {
-                JSONParser parser = new JSONParser(Input, IsFile);
+                inputParser = new JSONParser(Input, IsFile);
+            }
+            catch (Exception exception)
+            {
+                InException = exception;
+                result = false;
+            }
+
+            return result;
+        }
+
+        /*
+         * Validate JSON array tag against schema tag
+         * @param Input tag input JSON array tag
+         * @param SchemaTag schema object tag
+         */
+        static private void ValidateArrayTag(JSONArrayTag InputTag, JSONObjectTag SchemaTag)
+        {
+            JSONObjectTag entryTag = RetrieveSchemaEntryTag(SchemaTag);
+            JSONStringTag typeTag = RetrieveSchemaTypeTag(entryTag);
+
+            // TODO: check optional schema parameters (count, etc.)
+
+            foreach (IJSONTag element in InputTag)
+            {
+
+                switch (element.GetTagType())
+                {
+                    case JSONTagType.Array:
+                        ValidateArrayTag(element.AsArray(), entryTag);
+                        break;
+                    case JSONTagType.Boolean:
+                        ValidateBooleanTag((JSONBooleanTag)element, entryTag);
+                        break;
+                    case JSONTagType.Number:
+                        ValidateNumberTag((JSONNumberTag)element, entryTag, true);
+                        break;
+                    case JSONTagType.Object:
+                        ValidateObjectTag(element.AsObject(), entryTag, true);
+                        break;
+                    case JSONTagType.String:
+                        ValidateStringTag((JSONStringTag)element, entryTag);
+                        break;
+                    default:
+                        throw new JSONException(JSONException.JSONExceptionType.UnknownSchemaTagType, element.GetTagType().ToString());
+                }
+            }
+        }
+
+        /*
+         * Validate JSON boolean tag against schema tag
+         * @param Input tag input JSON boolean tag
+         * @param SchemaTag schema object tag
+         */
+        static private void ValidateBooleanTag(JSONBooleanTag InputTag, JSONObjectTag SchemaTag)
+        {
+
+            // TODO: check optional schema parameters (range, etc.)
+        }
+
+        /*
+         * Validate JSON number tag against schema tag
+         * @param Input tag input JSON number tag
+         * @param SchemaTag schema object tag
+         * @param IsFloat determine if input tag is floating-point
+         */
+        static private void ValidateNumberTag(JSONNumberTag InputTag, JSONObjectTag SchemaTag, bool IsFloat)
+        {
+
+            // TODO: check optional schema parameters (range, etc.)
+        }
+
+        /*
+         * Validate JSON object tag against schema tag
+         * @param Input tag input JSON object tag
+         * @param SchemaTag schema object tag
+         * @param IsRoot determine if input tag is is root tag (default: false)
+         */
+        static private void ValidateObjectTag(JSONObjectTag InputTag, JSONObjectTag SchemaTag, bool IsRoot = false)
+        {
+            JSONStringTag subTypeTag, typeTag = RetrieveSchemaTypeTag(SchemaTag);
+            JSONObjectTag entryTag = RetrieveSchemaEntryTag(SchemaTag);
+
+            try
+            {
+
+                if (!IsRoot && (InputTag.Key != SchemaTag.Key))
+                {
+                    throw new JSONException(JSONException.JSONExceptionType.ExpectingNamedObjectTag, SchemaTag.Key);
+                }
+
+                foreach (KeyValuePair<string, IJSONTag> entry in entryTag)
+                {
+
+                    if (!InputTag.ContainsKey(entry.Key))
+                    {
+                        throw new JSONException(JSONException.JSONExceptionType.ExpectingNamedObjectChildTag, entry.Key);
+                    }
+                    subTypeTag = RetrieveSchemaTypeTag(entry.Value);
+
+                    switch (subTypeTag.Value)
+                    {
+                        case JSONDefines.SCHEMA_TAG_ARRAY:
+
+                            if (InputTag[entry.Key].GetTagType() != JSONTagType.Array)
+                            {
+                                throw new JSONException(JSONException.JSONExceptionType.ExpectingNamedArrayChildTag, entry.Key);
+                            }
+                            ValidateArrayTag(InputTag[entry.Key].AsArray(), entry.Value.AsObject());
+                            break;
+                        case JSONDefines.SCHEMA_TAG_BOOLEAN:
+
+                            if (InputTag[entry.Key].GetTagType() != JSONTagType.Boolean)
+                            {
+                                throw new JSONException(JSONException.JSONExceptionType.ExpectingNamedBooleanChildTag, entry.Key);
+                            }
+                            ValidateBooleanTag((JSONBooleanTag)InputTag[entry.Key], entry.Value.AsObject());
+                            break;
+                        case JSONDefines.SCHEMA_TAG_FLOAT:
+
+                            if (InputTag[entry.Key].GetTagType() != JSONTagType.Number)
+                            {
+                                throw new JSONException(JSONException.JSONExceptionType.ExpectingNamedNumberChildTag, entry.Key);
+                            }
+                            ValidateNumberTag((JSONNumberTag)InputTag[entry.Key], entry.Value.AsObject(), true);
+                            break;
+                        case JSONDefines.SCHEMA_TAG_INTEGER:
+
+                            if (InputTag[entry.Key].GetTagType() != JSONTagType.Number)
+                            {
+                                throw new JSONException(JSONException.JSONExceptionType.ExpectingNamedNumberChildTag, entry.Key);
+                            }
+                            ValidateNumberTag((JSONNumberTag)InputTag[entry.Key], entry.Value.AsObject(), false);
+                            break;
+                        case JSONDefines.SCHEMA_TAG_OBJECT:
+
+                            if (InputTag[entry.Key].GetTagType() != JSONTagType.Object)
+                            {
+                                throw new JSONException(JSONException.JSONExceptionType.ExpectingNamedObjectChildTag, entry.Key);
+                            }
+                            ValidateObjectTag(InputTag[entry.Key].AsObject(), entry.Value.AsObject());
+                            break;
+                        case JSONDefines.SCHEMA_TAG_STRING:
+
+                            if (InputTag[entry.Key].GetTagType() != JSONTagType.String)
+                            {
+                                throw new JSONException(JSONException.JSONExceptionType.ExpectingNamedStringChildTag, entry.Key);
+                            }
+                            ValidateStringTag((JSONStringTag)InputTag[entry.Key], entry.Value.AsObject());
+                            break;
+                        default:
+                            throw new JSONException(JSONException.JSONExceptionType.UnknownSchemaTagType, subTypeTag.Value);
+                    }
+                }
+            }
+            catch (Exception exception)
+            {
+                throw new JSONException(JSONException.JSONExceptionType.SchemaMismatch, exception);
+            }
+        }
+
+        /*
+         * Validate JSON string tag against schema tag
+         * @param Input tag input JSON string tag
+         * @param SchemaTag schema object tag
+         */
+        static private void ValidateStringTag(JSONStringTag InputTag, JSONObjectTag SchemaTag)
+        {
+
+            // TODO: check optional schema parameters (length, pattern, etc.)
+        }
+
+        /*
+         * Validate JSON data or file against JSON schema data or file
+         * @param Input JSON data or file path
+         * @param SchemaInput Schema JSON data or file path
+         * @param InException optional user supplied exception object (filled upon exception, null otherwise)
+         * @return true if successful, false otherwise
+         */
+        static public bool ValidateWithSchema(string Input, string SchemaInput, out Exception InException)
+        {
+            return ValidateWithSchema(Input, true, SchemaInput, true, out InException);
+        }
+
+        /*
+         * Validate JSON data or file against JSON schema data or file
+         * @param Input JSON data or file path
+         * @param IsFile determine if input is a file path
+         * @param SchemaInput Schema JSON data or file path
+         * @param IsSchemaFile determine if schema is a file file path
+         * @param InException optional user supplied exception object (filled upon exception, null otherwise)
+         * @return true if successful, false otherwise
+         */
+        static public bool ValidateWithSchema(string Input, bool IsFile, string SchemaInput, bool IsSchemaFile, out Exception InException)
+        {
+            bool result = true;
+            JSONObjectTag inputTag, schemaTag;
+
+            InException = null;
+
+            try
+            {
+                inputTag = new JSONParser(Input, IsFile).RootTag;
+                schemaTag = new JSONParser(SchemaInput, IsSchemaFile).RootTag;
+                ValidateObjectTag(inputTag, schemaTag, true);
             }
             catch (Exception exception)
             {

@@ -3,6 +3,11 @@ JSON
 
 A small JSON library, written in C#, capable of reading and writing JSON files.
 
+###Version 0.1.1402.02
+Updated: 01/06/2013
+
+* Added json file schema support through the statically available validation routines in JSONDocument
+
 ###Version 0.1.1402.01
 Updated: 01/05/2013
 
