@@ -27,7 +27,7 @@ class TestClass
         Exception schemaResults;
         string key, path = "..\\..\\test\\test.json", schemaPath = "..\\..\\test\\test.json_schema";
 
-        Console.WriteLine(JSONDefines.LibraryVersion(true, true));
+        Console.WriteLine(JSONDefines.LibraryVersion(true, true) + "\n------------");
 
         try
         {
@@ -35,16 +35,16 @@ class TestClass
             JSONDocument doc = new JSONDocument(false, path);
             key = JSONDocument.ExtractKey(path);
 
+            // print out json file contents
+            Console.WriteLine(doc.ToString(key) + "\n------------");
+
             // retrieve key-value pairs from json object
             Console.WriteLine("NAME: " + doc[key]["firstName"].AsString() + " " + doc[key]["lastName"].AsString());
             Console.WriteLine("HOMEPHONE: " + doc[key]["phoneNumbers"][0]["number"].AsString());
             Console.WriteLine("AGE: " + doc[key]["age"].AsInteger() + " (" + doc[key]["age"].AsFloat() + ")");
 
-            // print out json file contents
-            Console.WriteLine(doc.ToString(key));
-
             // verify json file matches schema file
-            Console.WriteLine(!JSONDocument.ValidateWithSchema(path, schemaPath, out schemaResults) ? schemaResults.Message : "Schema Match");
+            Console.WriteLine("------------\n" + (!JSONDocument.ValidateWithSchema(path, schemaPath, out schemaResults) ? schemaResults.Message : "Schema Match!"));
 
             // write json contents to new json file
             //doc.Write(key, "..\\..\\test\\test_copy.json");

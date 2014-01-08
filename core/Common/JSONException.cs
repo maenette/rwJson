@@ -36,12 +36,17 @@ namespace JSON
          */
         public enum JSONExceptionType
         {
-            CharacterOutOfBounds = 0,               // character exceeds max character in stream
+            ArrayChildCountMismatch = 0,            // array element count does not match schema
+            BooleanOutOfRange,                      // boolean value is out of range
+            CharacterOutOfBounds,                   // character exceeds max character in stream
+            DuplicateBooleanRangeValue,             // duplicate boolean range value
             ExpectingArrayTagCloseBrace,            // expecting array tag close brace
             ExpectingArrayTagOpenBrace,             // expecting array tag open brace
             ExpectingBoolean,                       // expecting boolean string
             ExpectingBooleanValue,                  // expecting boolean value string
             ExpectingKeyString,                     // expecting key string
+            ExpectingLengthArrayCount,              // expecting valid length array count
+            ExpectingLengthValue,                    // expecting length value
             ExpectingNamedArrayChildTag,            // expecting named array child tag
             ExpectingNamedBooleanChildTag,          // expecting named boolean child tag
             ExpectingNamedNumberChildTag,           // expecting named number child tag
@@ -52,11 +57,16 @@ namespace JSON
             ExpectingObjectTagCloseBracket,         // expecting object tag close bracket
             ExpectingObjectTagOpenBracket,          // expecting object tag open bracket
             ExpectingPairDelimiter,                 // expecting pair delimiter
+            ExpectingRangeArrayCount,               // expecting valid range array count
+            ExpectingRangeValue,                    // expecting range value
             ExpectingSymbol,                        // expecting symbol character
             ExpectingToken,                         // expecting tokanizable character
             FileException,                          // generic file io exception occurred
+            InternalException,                      // generic internal exception
             InvalidKey,                             // invalid key string
             InvalidSchemaTagType,                   // invalid schema tag type
+            InvalidValueLength,                     // invalid value length
+            InvalidValueRange,                      // invalid value range
             KeyNotFound,                            // key not found
             KeyNotUnique,                           // key is not unique
             MissingSchemaTag,                       // missing required schema tag
@@ -69,14 +79,17 @@ namespace JSON
             NotTypeNumber,                          // not number tag type
             NotTypeObject,                          // not object tag type
             NotTypeString,                          // not string tag type
+            ObjectChildCountMismatch,               // object element count does not match schema
             RowOutOfBounds,                         // character row does not exist
             SchemaMismatch,                         // schema does not match input
+            StringPatternMismatch,                  // string pattern mismatch
             TokenAlreadyExists,                     // token already exists
             TokenNotFound,                          // token does not exist
             TokenOutOfBounds,                       // token exceeds max token in stream
             UnexpectedEndOfStream,                  // unexpected end of stream
             UnknownSchemaTagType,                   // unknown schema tag type string
             UnterminatedString,                     // unterminated string
+            ValueOutOfRange,                        // value is out of range
         }
 
         /*

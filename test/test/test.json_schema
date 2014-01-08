@@ -1,45 +1,65 @@
 {
 	"@entry": {
 		"firstName": {
-			"@type": "string"
+			"@type": "string",
+			"@pattern": "^[A-Z][a-z]*$",
+			"@length": [ 1, 50 ]
 		},
 		"lastName": {
-			"@type": "string"
+			"@type": "string",
+			"@pattern": "^[A-Z][a-z]*$",
+			"@length": [ 1, 50 ]
 		},
 		"age": {
-			"@type": "integer"
+			"@type": "integer",
+			"@range": [ 1, 100 ]
 		},
 		"pi": {
-			"@type": "float"
+			"@type": "float",
+			"@range": [ 3.14159 ]
 		},
 		"address": {
+			"@count": 4,
 			"@entry": {
 				"streetAddress": {
-					"@type": "string"
+					"@type": "string",
+					"@pattern": "^[0-9]+\ [a-zA-Z0-9]+(\ [A-Z][a-z]*)?$",
+					"@length": [ 1, 100 ]
 				},
 				"city": {
-					"@type": "string"
+					"@type": "string",
+					"@pattern": "^[A-Z][a-z]*([\ ][A-Z][a-z]*)*$",
+					"@length": [ 1, 50 ]
 				},
 				"state": {
-					"@type": "string"
+					"@type": "string",
+					"@pattern": "^[A-Z]{2}$",
+					"@length": [ 2 ]
 				},
 				"postalCode": {
-					"@type": "integer"
+					"@type": "integer",
+					"@range": [ 00000, 99999 ]
 				}
 			},
 			"@type": "object"
 		},
 		"phoneNumbers": {
+			"@count": 2,
 			"@entry": {
 				"@entry": {
 					"type": {
-						"@type": "string"
+						"@type": "string",
+						"@pattern": "^[a-zA-Z][a-z]*$",
+						"@length": [ 1, 50 ]
 					},
 					"number": {
-						"@type": "string"
+						"@type": "string",
+						"@pattern": "^[0-9]{3}\ [0-9]{3}-[0-9]{4}$",
+						"@length": [ 7, 50 ]
 					},
 					"callable": {
-						"@type": "boolean"
+						"@type": "boolean",
+						"@range": [ true, false ]
 					}
 				},
 				"@type": "object"

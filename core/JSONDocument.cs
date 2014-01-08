@@ -302,10 +302,26 @@ namespace JSON
          */
         static private void ValidateArrayTag(JSONArrayTag InputTag, JSONObjectTag SchemaTag)
         {
+            int elementCount;
+            IJSONTag optionalTag;
             JSONObjectTag entryTag = RetrieveSchemaEntryTag(SchemaTag);
             JSONStringTag typeTag = RetrieveSchemaTypeTag(entryTag);
 
-            // TODO: check optional schema parameters (count, etc.)
+            if (SchemaTag.ContainsKey(JSONDefines.SCHEMA_TAG_COUNT))
+            {
+                optionalTag = SchemaTag[JSONDefines.SCHEMA_TAG_COUNT];
+
+                if (optionalTag.GetTagType() != JSONTagType.Number)
+                {
+                    throw new JSONException(JSONException.JSONExceptionType.ExpectingNamedNumberChildTag, JSONDefines.SCHEMA_TAG_COUNT);
+                }
+                elementCount = ((JSONNumberTag)optionalTag).AsInteger();
+
+                if (InputTag.Count != elementCount)
+                {
+                    throw new JSONException(JSONException.JSONExceptionType.ArrayChildCountMismatch, InputTag.GetKey() + "[" + elementCount + "]");
+                }
+            }
 
             foreach (IJSONTag element in InputTag)
             {
@@ -340,8 +356,65 @@ namespace JSON
          */
         static private void ValidateBooleanTag(JSONBooleanTag InputTag, JSONObjectTag SchemaTag)
         {
+            IJSONTag optionalTag;
+            JSONArrayTag rangeArrayTag;
+            bool allowFalse = false, allowTrue = false;
 
-            // TODO: check optional schema parameters (range, etc.)
+            if (SchemaTag.ContainsKey(JSONDefines.SCHEMA_TAG_RANGE))
+            {
+                optionalTag = SchemaTag[JSONDefines.SCHEMA_TAG_RANGE];
+
+                if (optionalTag.GetTagType() != JSONTagType.Array)
+                {
+                    throw new JSONException(JSONException.JSONExceptionType.ExpectingNamedArrayChildTag, JSONDefines.SCHEMA_TAG_RANGE);
+                }
+                rangeArrayTag = (JSONArrayTag)optionalTag;
+
+                if ((rangeArrayTag.Count < JSONDefines.SCHEMA_RANGE_MIN_COUNT) || (rangeArrayTag.Count > JSONDefines.SCHEMA_RANGE_MAX_COUNT))
+                {
+                    throw new JSONException(JSONException.JSONExceptionType.ExpectingRangeArrayCount, InputTag.GetKey()
+                        + "[" + JSONDefines.SCHEMA_RANGE_MIN_COUNT + "||" + JSONDefines.SCHEMA_RANGE_MAX_COUNT + "]");
+                }
+
+                foreach (IJSONTag element in rangeArrayTag)
+                {
+
+                    if (element.GetTagType() != JSONTagType.Boolean)
+                    {
+                        throw new JSONException(JSONException.JSONExceptionType.ExpectingRangeValue, InputTag.GetKey());
+                    }
+
+                    if (((JSONBooleanTag)element).AsBoolean())
+                    {
+
+                        if (allowTrue)
+                        {
+                            throw new JSONException(JSONException.JSONExceptionType.DuplicateBooleanRangeValue, InputTag.GetKey());
+                        }
+                        allowTrue = true;
+                    }
+                    else
+                    {
+
+                        if (allowFalse)
+                        {
+                            throw new JSONException(JSONException.JSONExceptionType.DuplicateBooleanRangeValue, InputTag.GetKey());
+                        }
+                        allowFalse = true;
+                    }
+                }
+
+                if (InputTag.AsBoolean() && !allowTrue)
+                {
+                    throw new JSONException(JSONException.JSONExceptionType.BooleanOutOfRange, InputTag.GetKey()
+                        + " [" + InputTag.AsBoolean() + " is not allowed]");
+                }
+                else if (!InputTag.AsBoolean() && !allowFalse)
+                {
+                    throw new JSONException(JSONException.JSONExceptionType.BooleanOutOfRange, InputTag.GetKey()
+                        + " [" + InputTag.AsBoolean() + " is not allowed]");
+                }
+            }
         }
 
         /*
@@ -352,8 +425,83 @@ namespace JSON
          */
         static private void ValidateNumberTag(JSONNumberTag InputTag, JSONObjectTag SchemaTag, bool IsFloat)
         {
+            IJSONTag optionalTag;
+            JSONArrayTag rangeArrayTag;
+            float maxFloatValue, minFloatValue;
+            int maxIntegerValue, minIntegerValue;
 
-            // TODO: check optional schema parameters (range, etc.)
+            if (SchemaTag.ContainsKey(JSONDefines.SCHEMA_TAG_RANGE))
+            {
+                optionalTag = SchemaTag[JSONDefines.SCHEMA_TAG_RANGE];
+
+                if (optionalTag.GetTagType() != JSONTagType.Array)
+                {
+                    throw new JSONException(JSONException.JSONExceptionType.ExpectingNamedArrayChildTag, JSONDefines.SCHEMA_TAG_RANGE);
+                }
+                rangeArrayTag = (JSONArrayTag)optionalTag;
+
+                if ((rangeArrayTag.Count < JSONDefines.SCHEMA_RANGE_MIN_COUNT) || (rangeArrayTag.Count > JSONDefines.SCHEMA_RANGE_MAX_COUNT))
+                {
+                    throw new JSONException(JSONException.JSONExceptionType.ExpectingRangeArrayCount, InputTag.GetKey()
+                        + "[" + JSONDefines.SCHEMA_RANGE_MIN_COUNT + "||" + JSONDefines.SCHEMA_RANGE_MAX_COUNT + "]");
+                }
+
+                foreach (IJSONTag element in rangeArrayTag)
+                {
+
+                    if (element.GetTagType() != JSONTagType.Number)
+                    {
+                        throw new JSONException(JSONException.JSONExceptionType.ExpectingRangeValue, InputTag.GetKey());
+                    }
+                }
+
+                if (IsFloat)
+                {
+                    minFloatValue = rangeArrayTag[JSONDefines.SCHEMA_RANGE_MIN_OFFSET].AsFloat();
+                    maxFloatValue = rangeArrayTag[(rangeArrayTag.Count == JSONDefines.SCHEMA_RANGE_MIN_COUNT) 
+                        ? JSONDefines.SCHEMA_RANGE_MIN_OFFSET : JSONDefines.SCHEMA_RANGE_MAX_OFFSET].AsFloat();
+
+                    if (minFloatValue > maxFloatValue)
+                    {
+                        throw new JSONException(JSONException.JSONExceptionType.InvalidValueRange, InputTag.GetKey());
+                    }
+
+                    if (InputTag.AsFloat() < minFloatValue)
+                    {
+                        throw new JSONException(JSONException.JSONExceptionType.ValueOutOfRange, InputTag.GetKey() 
+                            + " [" + InputTag.AsFloat() + " < " + minFloatValue + "]");
+                    }
+
+                    if(InputTag.AsFloat() > maxFloatValue)
+                    {
+                        throw new JSONException(JSONException.JSONExceptionType.ValueOutOfRange, InputTag.GetKey()
+                            + " [" + InputTag.AsFloat() + " > " + maxFloatValue + "]");
+                    }
+                }
+                else
+                {
+                    minIntegerValue = rangeArrayTag[JSONDefines.SCHEMA_RANGE_MIN_OFFSET].AsInteger();
+                    maxIntegerValue = rangeArrayTag[(rangeArrayTag.Count == JSONDefines.SCHEMA_RANGE_MIN_COUNT)
+                        ? JSONDefines.SCHEMA_RANGE_MIN_OFFSET : JSONDefines.SCHEMA_RANGE_MAX_OFFSET].AsInteger();
+
+                    if (minIntegerValue > maxIntegerValue)
+                    {
+                        throw new JSONException(JSONException.JSONExceptionType.InvalidValueRange, InputTag.GetKey());
+                    }
+
+                    if (InputTag.AsInteger() < minIntegerValue)
+                    {
+                        throw new JSONException(JSONException.JSONExceptionType.ValueOutOfRange, InputTag.GetKey()
+                            + " [" + InputTag.AsInteger() + " < " + minIntegerValue + "]");
+                    }
+
+                    if (InputTag.AsInteger() > maxIntegerValue)
+                    {
+                        throw new JSONException(JSONException.JSONExceptionType.ValueOutOfRange, InputTag.GetKey()
+                            + " [" + InputTag.AsInteger() + " > " + maxIntegerValue + "]");
+                    }
+                }
+            }
         }
 
         /*
@@ -364,6 +512,8 @@ namespace JSON
          */
         static private void ValidateObjectTag(JSONObjectTag InputTag, JSONObjectTag SchemaTag, bool IsRoot = false)
         {
+            int elementCount;
+            IJSONTag optionalTag;
             JSONStringTag subTypeTag, typeTag = RetrieveSchemaTypeTag(SchemaTag);
             JSONObjectTag entryTag = RetrieveSchemaEntryTag(SchemaTag);
 
@@ -373,6 +523,22 @@ namespace JSON
                 if (!IsRoot && (InputTag.Key != SchemaTag.Key))
                 {
                     throw new JSONException(JSONException.JSONExceptionType.ExpectingNamedObjectTag, SchemaTag.Key);
+                }
+
+                if (SchemaTag.ContainsKey(JSONDefines.SCHEMA_TAG_COUNT))
+                {
+                    optionalTag = SchemaTag[JSONDefines.SCHEMA_TAG_COUNT];
+
+                    if (optionalTag.GetTagType() != JSONTagType.Number)
+                    {
+                        throw new JSONException(JSONException.JSONExceptionType.ExpectingNamedNumberChildTag, JSONDefines.SCHEMA_TAG_COUNT);
+                    }
+                    elementCount = ((JSONNumberTag)optionalTag).AsInteger();
+
+                    if (InputTag.Count != elementCount)
+                    {
+                        throw new JSONException(JSONException.JSONExceptionType.ObjectChildCountMismatch, InputTag.GetKey() + "[" + elementCount + "]");
+                    }
                 }
 
                 foreach (KeyValuePair<string, IJSONTag> entry in entryTag)
@@ -452,8 +618,75 @@ namespace JSON
          */
         static private void ValidateStringTag(JSONStringTag InputTag, JSONObjectTag SchemaTag)
         {
+            Match patternMatch;
+            IJSONTag optionalTag;
+            JSONStringTag patternTag;
+            JSONArrayTag lengthArrayTag;
+            int minLengthValue, maxLengthValue;
 
-            // TODO: check optional schema parameters (length, pattern, etc.)
+            if (SchemaTag.ContainsKey(JSONDefines.SCHEMA_TAG_LENGTH))
+            {
+                optionalTag = SchemaTag[JSONDefines.SCHEMA_TAG_LENGTH];
+
+                if (optionalTag.GetTagType() != JSONTagType.Array)
+                {
+                    throw new JSONException(JSONException.JSONExceptionType.ExpectingNamedArrayChildTag, JSONDefines.SCHEMA_TAG_LENGTH);
+                }
+                lengthArrayTag = (JSONArrayTag)optionalTag;
+
+                if ((lengthArrayTag.Count < JSONDefines.SCHEMA_LENGTH_MIN_COUNT) || (lengthArrayTag.Count > JSONDefines.SCHEMA_LENGTH_MAX_COUNT))
+                {
+                    throw new JSONException(JSONException.JSONExceptionType.ExpectingLengthArrayCount, InputTag.GetKey()
+                        + "[" + JSONDefines.SCHEMA_LENGTH_MIN_COUNT + "||" + JSONDefines.SCHEMA_LENGTH_MAX_COUNT + "]");
+                }
+
+                foreach (IJSONTag element in lengthArrayTag)
+                {
+
+                    if (element.GetTagType() != JSONTagType.Number)
+                    {
+                        throw new JSONException(JSONException.JSONExceptionType.ExpectingLengthValue, InputTag.GetKey());
+                    }
+                }
+                minLengthValue = lengthArrayTag[JSONDefines.SCHEMA_LENGTH_MIN_OFFSET].AsInteger();
+                maxLengthValue = lengthArrayTag[(lengthArrayTag.Count == JSONDefines.SCHEMA_LENGTH_MIN_COUNT)
+                    ? JSONDefines.SCHEMA_LENGTH_MIN_OFFSET : JSONDefines.SCHEMA_LENGTH_MAX_OFFSET].AsInteger();
+
+                if (minLengthValue > maxLengthValue)
+                {
+                    throw new JSONException(JSONException.JSONExceptionType.InvalidValueLength, InputTag.GetKey());
+                }
+
+                if (InputTag.AsString().Length < minLengthValue)
+                {
+                    throw new JSONException(JSONException.JSONExceptionType.ValueOutOfRange, InputTag.GetKey()
+                        + " [" + InputTag.AsString().Length + " < " + minLengthValue + "]");
+                }
+
+                if (InputTag.AsString().Length > maxLengthValue)
+                {
+                    throw new JSONException(JSONException.JSONExceptionType.ValueOutOfRange, InputTag.GetKey()
+                        + " [" + InputTag.AsString().Length + " > " + maxLengthValue + "]");
+                }
+            }
+
+            if (SchemaTag.ContainsKey(JSONDefines.SCHEMA_TAG_PATTERN))
+            {
+                optionalTag = SchemaTag[JSONDefines.SCHEMA_TAG_PATTERN];
+
+                if (optionalTag.GetTagType() != JSONTagType.String)
+                {
+                    throw new JSONException(JSONException.JSONExceptionType.ExpectingNamedStringChildTag, JSONDefines.SCHEMA_TAG_PATTERN);
+                }
+                patternTag = (JSONStringTag)optionalTag;
+                patternMatch = Regex.Match(InputTag.AsString(), patternTag.AsString(), RegexOptions.None);
+
+                if (!patternMatch.Success)
+                {
+                    throw new JSONException(JSONException.JSONExceptionType.StringPatternMismatch, InputTag.GetKey() 
+                        + " [\'" + patternTag.AsString() + "\']");
+                }
+            }
         }
 
         /*

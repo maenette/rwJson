@@ -3,6 +3,14 @@ JSON
 
 A small JSON library, written in C#, capable of reading and writing JSON files.
 
+###Version 0.1.1402.03
+Updated: 01/07/2013
+
+* Added more json file schema tags
+** ```@pattern``` String regex pattern
+** ```@length``` String length
+** ```@range``` Value range
+
 ###Version 0.1.1402.02
 Updated: 01/06/2013
 
