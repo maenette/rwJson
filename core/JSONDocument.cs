@@ -125,6 +125,30 @@ namespace JSON
         }
 
         /*
+         * Determine if schema tag type is optional
+         * @param SchemaTag schema tag object
+         * @return true if schema tag is optional
+         */
+        static private bool IsSchemaTagOptional(JSONObjectTag SchemaTag)
+        {
+            IJSONTag unknownTag;
+            bool optional = false;
+
+            if (SchemaTag.ContainsKey(JSONDefines.SCHEMA_TAG_OPTIONAL))
+            {
+                unknownTag = SchemaTag[JSONDefines.SCHEMA_TAG_OPTIONAL];
+
+                if (unknownTag.GetTagType() != JSONTagType.Boolean)
+                {
+                    throw new JSONException(JSONException.JSONExceptionType.InvalidSchemaTagType, unknownTag.GetTagType().ToString());
+                }
+                optional = ((JSONBooleanTag)unknownTag).AsBoolean();
+            }
+
+            return optional;
+        }
+
+        /*
          * Read in JSON file
          * @param Path JSON file path
          */
@@ -543,6 +567,11 @@ namespace JSON
 
                 foreach (KeyValuePair<string, IJSONTag> entry in entryTag)
                 {
+
+                    if (IsSchemaTagOptional(entry.Value.AsObject()) && !InputTag.ContainsKey(entry.Key))
+                    {
+                        continue;
+                    }
 
                     if (!InputTag.ContainsKey(entry.Key))
                     {

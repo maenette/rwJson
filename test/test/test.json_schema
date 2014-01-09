@@ -16,10 +16,10 @@
 		},
 		"pi": {
 			"@type": "float",
-			"@range": [ 3.14159 ]
+			"@range": [ 3.14159 ],
+			"@optional": true
 		},
 		"address": {
-			"@count": 4,
 			"@entry": {
 				"streetAddress": {
 					"@type": "string",

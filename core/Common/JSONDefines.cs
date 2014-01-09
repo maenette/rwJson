@@ -93,6 +93,7 @@ namespace JSON
         public const string SCHEMA_TAG_COUNT = "@count";                                // schema count tag
         public const string SCHEMA_TAG_ENTRY = "@entry";                                // schema entry tag
         public const string SCHEMA_TAG_LENGTH = "@length";                              // schema length tag
+        public const string SCHEMA_TAG_OPTIONAL = "@optional";                          // schema optional tag
         public const string SCHEMA_TAG_PATTERN = "@pattern";                            // schema pattern tag
         public const string SCHEMA_TAG_RANGE = "@range";                                // schema range tag
         public const string SCHEMA_TAG_TYPE = "@type";                                  // schema type tag
@@ -110,7 +111,7 @@ namespace JSON
         public const string LIB_COPYRIGHT = "Copyright (C) 2013-2014 David Jolly";      // library copyright
         public const uint LIB_MAJOR = 0;                                                // major version
         public const uint LIB_MINOR = 1;                                                // minor version
-        public const uint LIB_REVISION = 3;                                             // revision
+        public const uint LIB_REVISION = 4;                                             // revision
         public const uint LIB_WORKWEEK = 1402;                                          // year/workweek
 
         /*

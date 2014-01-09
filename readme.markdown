@@ -3,13 +3,20 @@ JSON
 
 A small JSON library, written in C#, capable of reading and writing JSON files.
 
+###Version 0.1.1402.04
+Updated: 01/08/2013
+
+* Added more json file schema tags:
+* ```"@optional": true|false``` Marks schema tag as optional (if the source json files doesn't contain the optional tag, it is skipped)
+
 ###Version 0.1.1402.03
 Updated: 01/07/2013
 
-* Added more json file schema tags
-* ```@pattern``` String regex pattern
-* ```@length``` String length
-* ```@range``` Value range
+* Added more json file schema tags:
+* ```"@count": <maxCount>``` Array/Object child count
+* ```"@pattern": "<patternString>"``` String regex pattern
+* ```"@length": [ <minLength>, <maxLength> ]``` String length
+* ```"@range": [ <minValue>, <maxValue> ]``` Value range
 
 ###Version 0.1.1402.02
 Updated: 01/06/2013
