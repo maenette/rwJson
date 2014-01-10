@@ -46,7 +46,7 @@ namespace JSON
             ExpectingBooleanValue,                  // expecting boolean value string
             ExpectingKeyString,                     // expecting key string
             ExpectingLengthArrayCount,              // expecting valid length array count
-            ExpectingLengthValue,                    // expecting length value
+            ExpectingLengthValue,                   // expecting length value
             ExpectingNamedArrayChildTag,            // expecting named array child tag
             ExpectingNamedBooleanChildTag,          // expecting named boolean child tag
             ExpectingNamedNumberChildTag,           // expecting named number child tag
@@ -104,7 +104,7 @@ namespace JSON
                 Type.ToString()
                 )
         {
-            return;
+            this.Type = Type;
         }
 
         /*
@@ -120,7 +120,7 @@ namespace JSON
                 Type.ToString() + ": " + Message
                 )
         {
-            return;
+            this.Type = Type;
         }
 
         public JSONException(JSONExceptionType Type, Exception InnerException)
@@ -132,7 +132,7 @@ namespace JSON
                 InnerException
                 )
         {
-            return;
+            this.Type = Type;
         }
 
         /*
@@ -150,7 +150,18 @@ namespace JSON
                 InnerException
                 )
         {
-            return;
+            this.Type = Type;
         }
+
+        /*
+         * JSON exception type
+         */
+        public JSONExceptionType Type
+        {
+            get { return type; }
+            set { type = value; }
+        }
+
+        private JSONExceptionType type;
     }
 }

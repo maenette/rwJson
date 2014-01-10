@@ -271,7 +271,11 @@ namespace JSON
             {
                 currentToken = AdvanceToken();
             }
-            rootTag = EnumerateObject(true);
+
+            if (HasNextToken())
+            {
+                rootTag = EnumerateObject(true);
+            }
 
             return rootTag;
         }

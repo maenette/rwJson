@@ -3,13 +3,21 @@ JSON
 
 A small JSON library, written in C#, capable of reading and writing JSON files.
 
-###Version 0.1.1402.04
+###Version 0.1.1402r5
+Updated: 01/09/2013
+
+* Fixed a bug where JSONParser would fail is given an empty string
+* JSONException objects now hold JSONExceptionType as a member
+* Code cleanup
+
+###Version 0.1.1402r4
 Updated: 01/08/2013
 
 * Added more json file schema tags:
-* ```"@optional": true|false``` Marks schema tag as optional (if the source json files doesn't contain the optional tag, it is skipped)
+* ```"@optional": true|false``` Marks schema tag as optional (if the source json files doesn't contain the optional 
+tag, it is skipped)
 
-###Version 0.1.1402.03
+###Version 0.1.1402r3
 Updated: 01/07/2013
 
 * Added more json file schema tags:
@@ -18,18 +26,18 @@ Updated: 01/07/2013
 * ```"@length": [ <minLength>, <maxLength> ]``` String length
 * ```"@range": [ <minValue>, <maxValue> ]``` Value range
 
-###Version 0.1.1402.02
+###Version 0.1.1402r2
 Updated: 01/06/2013
 
 * Added json file schema support through the statically available validation routines in JSONDocument
 
-###Version 0.1.1402.01
+###Version 0.1.1402r1
 Updated: 01/05/2013
 
 * ExtractRootPath() function now publicly accessible in JSONDocument
 * Fixed a bug where JSON files with trailing whitespace might fail to parse
 
-###Version 0.1.1401.01 - 0.1.1401.05
+###Version 0.1.1401r1 - 0.1.1401r5
 Updated: 01/02/2013 - 01/04/2013
 
 * JSONNumberTag now supports negative values
@@ -37,26 +45,27 @@ Updated: 01/02/2013 - 01/04/2013
 * ExtractKey() function now publicly accessible in JSONDocument
 * Various other smaller changes
 
-###Version 0.1.1352.01
+###Version 0.1.1352r1
 Updated: 12/23/2013
 
 * JSON number tags now hold float (Single) values, instead of doubles
 * Floating point values can now be accessed through either AsFloat or AsInteger
 
-###Version 0.1.1351.05
+###Version 0.1.1351r5
 Updated: 12/17/2013
 
 * JSONTag array/object tags are now accessible via the indexer operator
 
-###Version 0.1.1351.04
+###Version 0.1.1351r4
 Updated: 12/16/2013
 
 * JSONDocument class now holds a dictionary of JSONObjectTags
 * JSONDocument can now call ReadAppend() to read in multiple JSON files
 * JSONDocument now holds an override flag that allows old JSON files to be removed automatically if keys match
-* JSONTag classes now contain routines for converting to all derived types (array, bool, number, object, string) with type checking
+* JSONTag classes now contain routines for converting to all derived types (array, bool, number, object, string) 
+with type checking
 
-###Version 0.1.1351.02
+###Version 0.1.1351r2
 Updated: 12/15/2013
 
 * Initial Release
@@ -70,11 +79,11 @@ Table of Contents
 	* [Lexer](https://github.com/majestic53/json#lexer)
 	* [Parser](https://github.com/majestic53/json#parser)
 	* [Document](https://github.com/majestic53/json#document)
+	* [Schema](https://github.com/majestic53/json#schema)
 3. [Syntax](https://github.com/majestic53/json#syntax)
-	* [JSON Object](https://github.com/majestic53/json#json-object)
+	* [JSON Objects](https://github.com/majestic53/json#json-objects)
 	* [JSON BNF](https://github.com/majestic53/json#json-bnf)
-4. [Example](https://github.com/majestic53/json#example)
-5. [License](https://github.com/majestic53/json#license)
+4. [License](https://github.com/majestic53/json#license)
 
 Usage
 ========
@@ -90,12 +99,31 @@ Architecture
 
 ###Document
 
+###Schemas
+
 Syntax
 ========
+Compared to other human-readable languages, such as XML, JSON is exceedingly simple and easy to use. 
+The following section briefly covers the various tag types and associated syntax used by JSON.
 
-###JSON Object
+###JSON Objects
 
 ###JSON BNF
+Listed below is the Backus–Naur Form (BNF) used by JSON.
+
+```
+JSON_DOC ::= <object>
+
+array ::= [ ] | [ <pair_list> ]
+
+object ::= { } | { <pair_list> }
+
+pair ::= <key> : <value>
+
+pair_list ::= <pair> | <pair> , <pair_list>
+
+value ::= <array> | <boolean> | <number> | <object> | <string>
+```
 
 Example
 ========

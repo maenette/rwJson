@@ -111,7 +111,7 @@ namespace JSON
         public const string LIB_COPYRIGHT = "Copyright (C) 2013-2014 David Jolly";      // library copyright
         public const uint LIB_MAJOR = 0;                                                // major version
         public const uint LIB_MINOR = 1;                                                // minor version
-        public const uint LIB_REVISION = 4;                                             // revision
+        public const uint LIB_REVISION = 5;                                             // revision
         public const uint LIB_WORKWEEK = 1402;                                          // year/workweek
 
         /*
@@ -128,7 +128,7 @@ namespace JSON
             {
                 stream.Append(LIB_NAME + " ");
             }
-            stream.Append("[v." + LIB_MAJOR + "." + LIB_MINOR + "." + LIB_WORKWEEK + "." + LIB_REVISION + "]");
+            stream.Append("[v." + LIB_MAJOR + "." + LIB_MINOR + "." + LIB_WORKWEEK + "r" + LIB_REVISION + "]");
 
             if (ShowCopyright)
             {
