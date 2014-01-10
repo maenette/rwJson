@@ -30,7 +30,7 @@ Changelog
 ###Version 0.1.1402r5
 Updated: 01/09/2013
 
-* Fixed a bug where JSONParser would fail is given an empty string
+* Fixed a bug where JSONParser would fail when given an empty string as input
 * JSONException objects now hold JSONExceptionType as a member
 * Code cleanup
 
