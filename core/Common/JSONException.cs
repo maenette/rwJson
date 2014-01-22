@@ -70,6 +70,7 @@ namespace JSON
             KeyNotFound,                            // key not found
             KeyNotUnique,                           // key is not unique
             MissingSchemaTag,                       // missing required schema tag
+            NoChildTagExists,                       // no child tag exists in input tag
             NoNextCharacter,                        // no next character exists in character stream
             NoNextToken,                            // no next token exists in token stream
             NoPreviousCharacter,                    // no previous character exists in character stream

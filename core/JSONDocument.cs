@@ -149,6 +149,29 @@ namespace JSON
         }
 
         /*
+         * Determine if schema tag contains a wildcard
+         * @param SchemaTag schema tag object
+         * @return wildcard schema tag, or null
+         */
+        static private JSONObjectTag IsSchemaTagWildcard(JSONObjectTag SchemaTag)
+        {
+            IJSONTag unknownTag;
+            JSONObjectTag wildcardTag = null;
+
+            if (SchemaTag.ContainsKey(JSONDefines.SCHEMA_TAG_WILDCARD))
+            {
+                unknownTag = SchemaTag[JSONDefines.SCHEMA_TAG_WILDCARD];
+
+                if (unknownTag.GetTagType() == JSONTagType.Object)
+                {
+                    wildcardTag = ((JSONObjectTag)unknownTag).AsObject();
+                }
+            }
+
+            return wildcardTag;
+        }
+
+        /*
          * Read in JSON file
          * @param Path JSON file path
          */
@@ -203,6 +226,27 @@ namespace JSON
                 }
             }
             Add(Key, new JSONParser(Input, IsFile).RootTag);
+        }
+
+        /*
+         * Retrieve first child tag from input tag
+         * @param InputTag input JSON tag object
+         * @return First child JSON tag object
+         */
+        static private IJSONTag RetrieveFirstChildTag(JSONObjectTag InputTag)
+        {
+            IJSONTag childTag;
+            IEnumerator<KeyValuePair<string, IJSONTag>> inputTagEnum;
+
+            inputTagEnum = InputTag.GetEnumerator();
+
+            if ((InputTag.Count == 0) || (!inputTagEnum.MoveNext()))
+            {
+                throw new JSONException(JSONException.JSONExceptionType.NoChildTagExists, InputTag.ToString());
+            }
+            childTag = inputTagEnum.Current.Value;
+
+            return childTag;
         }
 
         /*
@@ -538,8 +582,8 @@ namespace JSON
         {
             int elementCount;
             IJSONTag optionalTag;
-            JSONStringTag subTypeTag, typeTag = RetrieveSchemaTypeTag(SchemaTag);
-            JSONObjectTag entryTag = RetrieveSchemaEntryTag(SchemaTag);
+            JSONStringTag typeTag = RetrieveSchemaTypeTag(SchemaTag);
+            JSONObjectTag entryTag = RetrieveSchemaEntryTag(SchemaTag), wildcardTag;
 
             try
             {
@@ -575,68 +619,87 @@ namespace JSON
 
                     if (!InputTag.ContainsKey(entry.Key))
                     {
-                        throw new JSONException(JSONException.JSONExceptionType.ExpectingNamedObjectChildTag, entry.Key);
+                        wildcardTag = IsSchemaTagWildcard(entryTag);
+
+                        if (wildcardTag == null)
+                        {
+                            throw new JSONException(JSONException.JSONExceptionType.ExpectingNamedObjectChildTag, entry.Key);
+                        }
+                        ValidateObjectChildTag(InputTag, new KeyValuePair<string, IJSONTag>(RetrieveFirstChildTag(InputTag).GetKey(), wildcardTag));
                     }
-                    subTypeTag = RetrieveSchemaTypeTag(entry.Value);
-
-                    switch (subTypeTag.Value)
+                    else
                     {
-                        case JSONDefines.SCHEMA_TAG_ARRAY:
-
-                            if (InputTag[entry.Key].GetTagType() != JSONTagType.Array)
-                            {
-                                throw new JSONException(JSONException.JSONExceptionType.ExpectingNamedArrayChildTag, entry.Key);
-                            }
-                            ValidateArrayTag(InputTag[entry.Key].AsArray(), entry.Value.AsObject());
-                            break;
-                        case JSONDefines.SCHEMA_TAG_BOOLEAN:
-
-                            if (InputTag[entry.Key].GetTagType() != JSONTagType.Boolean)
-                            {
-                                throw new JSONException(JSONException.JSONExceptionType.ExpectingNamedBooleanChildTag, entry.Key);
-                            }
-                            ValidateBooleanTag((JSONBooleanTag)InputTag[entry.Key], entry.Value.AsObject());
-                            break;
-                        case JSONDefines.SCHEMA_TAG_FLOAT:
-
-                            if (InputTag[entry.Key].GetTagType() != JSONTagType.Number)
-                            {
-                                throw new JSONException(JSONException.JSONExceptionType.ExpectingNamedNumberChildTag, entry.Key);
-                            }
-                            ValidateNumberTag((JSONNumberTag)InputTag[entry.Key], entry.Value.AsObject(), true);
-                            break;
-                        case JSONDefines.SCHEMA_TAG_INTEGER:
-
-                            if (InputTag[entry.Key].GetTagType() != JSONTagType.Number)
-                            {
-                                throw new JSONException(JSONException.JSONExceptionType.ExpectingNamedNumberChildTag, entry.Key);
-                            }
-                            ValidateNumberTag((JSONNumberTag)InputTag[entry.Key], entry.Value.AsObject(), false);
-                            break;
-                        case JSONDefines.SCHEMA_TAG_OBJECT:
-
-                            if (InputTag[entry.Key].GetTagType() != JSONTagType.Object)
-                            {
-                                throw new JSONException(JSONException.JSONExceptionType.ExpectingNamedObjectChildTag, entry.Key);
-                            }
-                            ValidateObjectTag(InputTag[entry.Key].AsObject(), entry.Value.AsObject());
-                            break;
-                        case JSONDefines.SCHEMA_TAG_STRING:
-
-                            if (InputTag[entry.Key].GetTagType() != JSONTagType.String)
-                            {
-                                throw new JSONException(JSONException.JSONExceptionType.ExpectingNamedStringChildTag, entry.Key);
-                            }
-                            ValidateStringTag((JSONStringTag)InputTag[entry.Key], entry.Value.AsObject());
-                            break;
-                        default:
-                            throw new JSONException(JSONException.JSONExceptionType.UnknownSchemaTagType, subTypeTag.Value);
+                        ValidateObjectChildTag(InputTag, entry);
                     }
                 }
             }
             catch (Exception exception)
             {
                 throw new JSONException(JSONException.JSONExceptionType.SchemaMismatch, exception);
+            }
+        }
+
+        /*
+         * Validate JSON object child tag against schema tag
+         * @param Input tag input JSON object tag
+         * @param EntryTagPair schema mapped tag object
+         */
+        static private void ValidateObjectChildTag(JSONObjectTag InputTag, KeyValuePair<string, IJSONTag> EntryTagPair)
+        {
+            JSONStringTag subTypeTag = RetrieveSchemaTypeTag(EntryTagPair.Value);
+
+            switch (subTypeTag.Value)
+            {
+                case JSONDefines.SCHEMA_TAG_ARRAY:
+
+                    if (InputTag[EntryTagPair.Key].GetTagType() != JSONTagType.Array)
+                    {
+                        throw new JSONException(JSONException.JSONExceptionType.ExpectingNamedArrayChildTag, EntryTagPair.Key);
+                    }
+                    ValidateArrayTag(InputTag[EntryTagPair.Key].AsArray(), EntryTagPair.Value.AsObject());
+                    break;
+                case JSONDefines.SCHEMA_TAG_BOOLEAN:
+
+                    if (InputTag[EntryTagPair.Key].GetTagType() != JSONTagType.Boolean)
+                    {
+                        throw new JSONException(JSONException.JSONExceptionType.ExpectingNamedBooleanChildTag, EntryTagPair.Key);
+                    }
+                    ValidateBooleanTag((JSONBooleanTag)InputTag[EntryTagPair.Key], EntryTagPair.Value.AsObject());
+                    break;
+                case JSONDefines.SCHEMA_TAG_FLOAT:
+
+                    if (InputTag[EntryTagPair.Key].GetTagType() != JSONTagType.Number)
+                    {
+                        throw new JSONException(JSONException.JSONExceptionType.ExpectingNamedNumberChildTag, EntryTagPair.Key);
+                    }
+                    ValidateNumberTag((JSONNumberTag)InputTag[EntryTagPair.Key], EntryTagPair.Value.AsObject(), true);
+                    break;
+                case JSONDefines.SCHEMA_TAG_INTEGER:
+
+                    if (InputTag[EntryTagPair.Key].GetTagType() != JSONTagType.Number)
+                    {
+                        throw new JSONException(JSONException.JSONExceptionType.ExpectingNamedNumberChildTag, EntryTagPair.Key);
+                    }
+                    ValidateNumberTag((JSONNumberTag)InputTag[EntryTagPair.Key], EntryTagPair.Value.AsObject(), false);
+                    break;
+                case JSONDefines.SCHEMA_TAG_OBJECT:
+
+                    if (InputTag[EntryTagPair.Key].GetTagType() != JSONTagType.Object)
+                    {
+                        throw new JSONException(JSONException.JSONExceptionType.ExpectingNamedObjectChildTag, EntryTagPair.Key);
+                    }
+                    ValidateObjectTag(InputTag[EntryTagPair.Key].AsObject(), EntryTagPair.Value.AsObject());
+                    break;
+                case JSONDefines.SCHEMA_TAG_STRING:
+
+                    if (InputTag[EntryTagPair.Key].GetTagType() != JSONTagType.String)
+                    {
+                        throw new JSONException(JSONException.JSONExceptionType.ExpectingNamedStringChildTag, EntryTagPair.Key);
+                    }
+                    ValidateStringTag((JSONStringTag)InputTag[EntryTagPair.Key], EntryTagPair.Value.AsObject());
+                    break;
+                default:
+                    throw new JSONException(JSONException.JSONExceptionType.UnknownSchemaTagType, subTypeTag.Value);
             }
         }
 

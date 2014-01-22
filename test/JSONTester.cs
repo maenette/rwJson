@@ -25,7 +25,7 @@ class TestClass
     static void Main(string[] args)
     {
         Exception schemaResults;
-        string key, path = "..\\..\\test\\test.json", schemaPath = "..\\..\\test\\test.json_schema";
+        string key, path = "..\\..\\test\\test_wildcard.json", schemaPath = "..\\..\\test\\test_wildcard.json_schema";
 
         Console.WriteLine(JSONDefines.LibraryVersion(true, true) + "\n------------");
 
@@ -39,9 +39,9 @@ class TestClass
             Console.WriteLine(doc.ToString(key) + "\n------------");
 
             // retrieve key-value pairs from json object
-            Console.WriteLine("NAME: " + doc[key]["firstName"].AsString() + " " + doc[key]["lastName"].AsString());
+            /*Console.WriteLine("NAME: " + doc[key]["firstName"].AsString() + " " + doc[key]["lastName"].AsString());
             Console.WriteLine("HOMEPHONE: " + doc[key]["phoneNumbers"][0]["number"].AsString());
-            Console.WriteLine("AGE: " + doc[key]["age"].AsInteger() + " (" + doc[key]["age"].AsFloat() + ")");
+            Console.WriteLine("AGE: " + doc[key]["age"].AsInteger() + " (" + doc[key]["age"].AsFloat() + ")");*/
 
             // verify json file matches schema file
             Console.WriteLine("------------\n" + (!JSONDocument.ValidateWithSchema(path, schemaPath, out schemaResults) ? schemaResults.Message : "Schema Match!"));

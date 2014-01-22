@@ -1,0 +1,17 @@
+{
+	"@type": "object",
+	"@entry": {
+		"keyMap": {
+			"@type": "array",
+			"@entry": {
+				"@type": "object",
+				"@entry": {
+					"*": {
+						"@type": "integer",
+						"@range": [ 0, 172 ]
+					}
+				}
+			}
+		}
+	}
+}

@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("David Jolly")]
 [assembly: AssemblyProduct("json_test.exe")]
-[assembly: AssemblyCopyright("Copyright ©  2013 David Jolly")]
+[assembly: AssemblyCopyright("Copyright © 2013-2014 David Jolly")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

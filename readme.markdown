@@ -27,6 +27,11 @@ Table of Contents
 Changelog
 =========
 
+###Version 0.1.1404r1
+Updated: 01/21/2013
+
+* Added a wildcard schema tag (see "test/test/test_wildcard.json/json_schema" for an example)
+
 ###Version 0.1.1402r5
 Updated: 01/09/2013
 
