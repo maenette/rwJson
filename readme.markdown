@@ -31,7 +31,7 @@ Changelog
 Updated: 01/22/2013
 
 * Added line comment support (see examples under test directory)
-* ``` ; <comment> \n```` Comments can be inserted anywhere in the JSON/JSON schema file
+* ``` ; <comment> \n ``` Comments can be inserted anywhere in the JSON/JSON schema file
 * Removed restriction on trailing pair seperators ','
 * Added a UDL language definition for use with Notepad++
 
