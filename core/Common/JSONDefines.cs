@@ -36,11 +36,12 @@ namespace JSON
          * ---------------------
          * array ::= \[(<pair_list>|<empty>)\]
          * boolean ::= true|false
+         * comment ::= ;.*\n
          * key ::= <string>
          * number ::= (-)?[0-9]+(\.[0-9]*)?
          * object ::= <ws>\{(<pair_list>|<empty>)\}<ws>
          * pair ::= <ws><key><ws>\:<ws><value><ws>
-         * pair_list ::= <pair>(,<pair_list>)?
+         * pair_list ::= <pair>(,(<pair_list>)?)?
          * string ::= \".*\"
          * value ::= <array>|<boolean>|<number>|<object>|<string>|<empty>
          * ws ::= [ \t\r\n\f]*
@@ -68,6 +69,7 @@ namespace JSON
         public enum JSONWhitespaceType
         {
             EndOfFile = '\0',                                                           // end of file character
+            LineComment = ';',                                                          // line comment character
             LineFeed = '\n',                                                            // line feed character
             Space = ' ',                                                                // space character
             Tab = '\t',                                                                 // tab character
@@ -112,7 +114,7 @@ namespace JSON
         public const string LIB_COPYRIGHT = "Copyright (C) 2013-2014 David Jolly";      // library copyright
         public const uint LIB_MAJOR = 0;                                                // major version
         public const uint LIB_MINOR = 1;                                                // minor version
-        public const uint LIB_REVISION = 1;                                             // revision
+        public const uint LIB_REVISION = 2;                                             // revision
         public const uint LIB_WORKWEEK = 1404;                                          // year/workweek
 
         /*

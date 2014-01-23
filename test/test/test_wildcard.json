@@ -1,8 +1,12 @@
+; Example JSON file -- test_wildcard.json
+
 {
+
+	; Holds a series of key-bindings
 	"keyMap": [
-		{ "W": 66 },
-		{ "A": 44 },
-		{ "S": 62 },
-		{ "D": 47 }
-	]
+		{ "W": 66 }, ; W key binding
+		{ "A": 44 }, ; A key binding
+		{ "S": 62 }, ; S key binding
+		{ "D": 47 }, ; D key binding
+	],
 }

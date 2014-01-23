@@ -134,6 +134,12 @@ namespace JSON
                         break;
                     }
                     currentToken = AdvanceToken();
+
+                    if ((currentToken.Type == JSONToken.JSONTokenType.Symbol)
+                        && ((char)currentToken.SubType == (char)JSONDefines.JSONSymbolType.ArrayClose))
+                    {
+                        break;
+                    }
                 }
             }
 
@@ -239,6 +245,12 @@ namespace JSON
                         break;
                     }
                     currentToken = AdvanceToken();
+
+                    if ((currentToken.Type == JSONToken.JSONTokenType.Symbol)
+                        && ((char)currentToken.SubType == (char)JSONDefines.JSONSymbolType.ObjectClose))
+                    {
+                        break;
+                    }
                 }
             }
 

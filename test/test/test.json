@@ -1,24 +1,27 @@
+; Example JSON file -- test.json
+
+
 {
     "firstName": "John",
     "lastName": "Smith",
     "age": 25,
 	"pi": 3.14159,
-    "address": {
+    "address": { ; object example
         "streetAddress": "21 2nd Street",
         "city": "New York",
         "state": "NY",
-        "postalCode": 10021
+        "postalCode": 10021,
     },
-    "phoneNumbers": [
+    "phoneNumbers": [ ; array example
         {
             "type": "home",
             "number": "212 555-1234",
-			"callable": true
+			"callable": true,
         },
         {
             "type": "fax",
             "number": "646 555-4567",
-			"callable": false
-        }
-    ]
+			"callable": false,
+        },
+    ],
 }

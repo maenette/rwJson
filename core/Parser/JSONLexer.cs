@@ -990,12 +990,12 @@ namespace JSON
 
             if (HasNextCharacter() && (tokenPosition <= (tokenList.Count - 2)))
             {
+                SkipWhitespace();
 
-                while (HasNextCharacter() && (CharacterType == JSONCharacterType.Whitespace))
+                if (HasNextCharacter())
                 {
-                    MoveNextCharacter();
+                    InsertToken(EnumerateToken());
                 }
-                InsertToken(EnumerateToken());
             }
             ++tokenPosition;
 
@@ -1005,11 +1005,7 @@ namespace JSON
             }
             else
             {
-
-                while (HasNextCharacter() && (CharacterType == JSONCharacterType.Whitespace))
-                {
-                    MoveNextCharacter();
-                }
+                SkipWhitespace();
             }
 
             return GetToken();
@@ -1064,6 +1060,37 @@ namespace JSON
         {
             SetCharacters(Input, IsFile);
             ClearTokens();
+        }
+
+        /*
+         * Skip lexer base whitespace characters
+         */
+        public void SkipWhitespace()
+        {
+
+            while (HasNextCharacter() && (CharacterType == JSONCharacterType.Whitespace))
+            {
+                MoveNextCharacter();
+            }
+
+            if (GetCharacter() == (char)JSONDefines.JSONWhitespaceType.LineComment)
+            {
+
+                while (HasNextCharacter())
+                {
+
+                    if (GetCharacter() == (char)JSONDefines.JSONWhitespaceType.LineFeed)
+                    {
+                        break;
+                    }
+                    MoveNextCharacter();
+                }
+            }
+
+            if (HasNextCharacter() && (CharacterType == JSONCharacterType.Whitespace))
+            {
+                SkipWhitespace();
+            }
         }
 
         /*

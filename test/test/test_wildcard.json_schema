@@ -1,3 +1,6 @@
+; Example JSON schema file -- test_wildcard.json_schema
+; Used to validate test_wildcard.json
+
 {
 	"@type": "object",
 	"@entry": {
@@ -6,12 +9,12 @@
 			"@entry": {
 				"@type": "object",
 				"@entry": {
-					"*": {
+					"*": { ; wildcard name means that array entries don't have a fixed name
 						"@type": "integer",
-						"@range": [ 0, 172 ]
-					}
-				}
-			}
-		}
-	}
+						"@range": [ 0, 172, ],
+					},
+				},
+			},
+		},
+	},
 }
