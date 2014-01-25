@@ -2,27 +2,29 @@
 ; Used to validate test.json
 
 {
+	"@type": "object",
 	"@entry": {
 		"firstName": {
 			"@type": "string",
 			"@pattern": "^[A-Z][a-z]*$",
-			"@length": [ 1, 50, ],
+			"@length": [ 1, 50, ]
 		},
 		"lastName": {
 			"@type": "string",
 			"@pattern": "^[A-Z][a-z]*$",
-			"@length": [ 1, 50, ],
+			"@length": [ 1, 50, ]
 		},
 		"age": {
 			"@type": "integer",
-			"@range": [ 1, 100, ],
+			"@range": [ 1, 100, ]
 		},
 		"pi": {
 			"@type": "float",
 			"@range": [ 3.14159, ],
-			"@optional": true,
+			"@optional": true
 		},
 		"address": {
+			"@type": "object",
 			"@entry": {
 				"streetAddress": {
 					"@type": "string",
@@ -42,13 +44,14 @@
 				"postalCode": {
 					"@type": "integer",
 					"@range": [ 00000, 99999, ],
-				},
-			},
-			"@type": "object",
+				}
+			}
 		},
 		"phoneNumbers": {
+			"@type": "array",
 			"@count": 2,
 			"@entry": {
+				"@type": "object",
 				"@entry": {
 					"type": {
 						"@type": "string",
@@ -63,12 +66,10 @@
 					"callable": {
 						"@type": "boolean",
 						"@range": [ true, false, ],
-					},
-				},
-				"@type": "object",
-			},
-			"@type": "array",
-		},
-	},
-	"@type": "object",
+					}
+				}
+			}
+			
+		}
+	}
 }

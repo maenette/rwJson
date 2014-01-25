@@ -277,6 +277,52 @@ namespace JSON
             return entryTag;
         }
 
+        static private JSONTagType RetrieveSchemaRequiredType(IJSONTag SchemaTag)
+        {
+            IJSONTag unknownTag;
+            JSONStringTag entryTag;
+            JSONTagType requiredType;
+
+            try
+            {
+                unknownTag = SchemaTag[JSONDefines.SCHEMA_TAG_TYPE];
+
+                if (unknownTag.GetTagType() != JSONTagType.String)
+                {
+                    throw new JSONException(JSONException.JSONExceptionType.InvalidSchemaTagType, unknownTag.GetTagType().ToString());
+                }
+                entryTag = (JSONStringTag)unknownTag;
+            }
+            catch (Exception exception)
+            {
+                throw new JSONException(JSONException.JSONExceptionType.MissingSchemaTag, JSONDefines.SCHEMA_TAG_TYPE, exception);
+            }
+
+            switch (entryTag.Value)
+            {
+                case JSONDefines.SCHEMA_TAG_ARRAY:
+                    requiredType = JSONTagType.Array;
+                    break;
+                case JSONDefines.SCHEMA_TAG_BOOLEAN:
+                    requiredType = JSONTagType.Boolean;
+                    break;
+                case JSONDefines.SCHEMA_TAG_FLOAT:
+                case JSONDefines.SCHEMA_TAG_INTEGER:
+                    requiredType = JSONTagType.Number;
+                    break;
+                case JSONDefines.SCHEMA_TAG_OBJECT:
+                    requiredType = JSONTagType.Object;
+                    break;
+                case JSONDefines.SCHEMA_TAG_STRING:
+                    requiredType = JSONTagType.String;
+                    break;
+                default:
+                    throw new JSONException(JSONException.JSONExceptionType.UnknownSchemaTagType, entryTag.Value);
+            }
+
+            return requiredType;
+        }
+
         /*
          * Retrieve schema tag type
          * @param SchemaTag schema tag object
@@ -373,7 +419,7 @@ namespace JSON
             int elementCount;
             IJSONTag optionalTag;
             JSONObjectTag entryTag = RetrieveSchemaEntryTag(SchemaTag);
-            JSONStringTag typeTag = RetrieveSchemaTypeTag(entryTag);
+            JSONTagType requiredType = RetrieveSchemaRequiredType(entryTag);
 
             if (SchemaTag.ContainsKey(JSONDefines.SCHEMA_TAG_COUNT))
             {
@@ -393,6 +439,26 @@ namespace JSON
 
             foreach (IJSONTag element in InputTag)
             {
+
+                if (element.GetTagType() != requiredType)
+                {
+
+                    switch (requiredType)
+                    {
+                        case JSONTagType.Array:
+                            throw new JSONException(JSONException.JSONExceptionType.ExpectingArrayChildTag, element.ToString());
+                        case JSONTagType.Boolean:
+                            throw new JSONException(JSONException.JSONExceptionType.ExpectingBooleanChildTag, element.ToString());
+                        case JSONTagType.Number:
+                            throw new JSONException(JSONException.JSONExceptionType.ExpectingNumericChildTag, element.ToString());
+                        case JSONTagType.Object:
+                            throw new JSONException(JSONException.JSONExceptionType.ExpectingObjectChildTag, element.ToString());
+                        case JSONTagType.String:
+                            throw new JSONException(JSONException.JSONExceptionType.ExpectingStringChildTag, element.ToString());
+                        default:
+                            throw new JSONException(JSONException.JSONExceptionType.UnknownSchemaTagType, requiredType.ToString());
+                    }
+                }
 
                 switch (element.GetTagType())
                 {

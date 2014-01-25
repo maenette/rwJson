@@ -1,0 +1,8 @@
+; Example JSON file -- test_array.json
+
+{
+	"position": [
+		0,
+		0
+	]
+}

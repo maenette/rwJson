@@ -40,9 +40,11 @@ namespace JSON
             BooleanOutOfRange,                      // boolean value is out of range
             CharacterOutOfBounds,                   // character exceeds max character in stream
             DuplicateBooleanRangeValue,             // duplicate boolean range value
+            ExpectingArrayChildTag,                 // expecting array child tag
             ExpectingArrayTagCloseBrace,            // expecting array tag close brace
             ExpectingArrayTagOpenBrace,             // expecting array tag open brace
             ExpectingBoolean,                       // expecting boolean string
+            ExpectingBooleanChildTag,               // expecting boolean child tag
             ExpectingBooleanValue,                  // expecting boolean value string
             ExpectingKeyString,                     // expecting key string
             ExpectingLengthArrayCount,              // expecting valid length array count
@@ -53,12 +55,15 @@ namespace JSON
             ExpectingNamedObjectTag,                // expecting named object tag
             ExpectingNamedObjectChildTag,           // expecting named object child tag
             ExpectingNamedStringChildTag,           // expecting named string child tag
+            ExpectingNumericChildTag,               // expecting numeric child tag
             ExpectingNumericValue,                  // expecting numeric value string
+            ExpectingObjectChildTag,                // expecting object child tag
             ExpectingObjectTagCloseBracket,         // expecting object tag close bracket
             ExpectingObjectTagOpenBracket,          // expecting object tag open bracket
             ExpectingPairDelimiter,                 // expecting pair delimiter
             ExpectingRangeArrayCount,               // expecting valid range array count
             ExpectingRangeValue,                    // expecting range value
+            ExpectingStringChildTag,                // expecting string child tag
             ExpectingSymbol,                        // expecting symbol character
             ExpectingToken,                         // expecting tokanizable character
             FileException,                          // generic file io exception occurred

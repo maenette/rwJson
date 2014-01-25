@@ -1,0 +1,15 @@
+; Example JSON schema file -- test_array.json_schema
+; Used to validate test_array.json
+
+{
+	"@type": "object",
+	"@entry": {
+		"position": {
+			"@type": "array",
+			"@count": 2,				; 2D position has an x, y only
+			"@entry": {
+				"@type": "integer"
+			}
+		}
+	}
+}
