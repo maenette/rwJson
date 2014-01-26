@@ -33,6 +33,10 @@ Updated: 01/25/2013
 * Fixed a bug in the schema validation process, whereby basic privitive types (boolean, integer/float, string) 
 where not being type checked properly.
 
+###Version 0.1.1404r3
+
+* General code cleanup
+
 ###Version 0.1.1404r2
 Updated: 01/22/2013
 

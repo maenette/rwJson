@@ -39,12 +39,13 @@ namespace JSON
             ArrayChildCountMismatch = 0,            // array element count does not match schema
             BooleanOutOfRange,                      // boolean value is out of range
             CharacterOutOfBounds,                   // character exceeds max character in stream
+            CharacterRowOutOfBounds,                // character row does not exist
             DuplicateBooleanRangeValue,             // duplicate boolean range value
             ExpectingArrayChildTag,                 // expecting array child tag
             ExpectingArrayTagCloseBrace,            // expecting array tag close brace
             ExpectingArrayTagOpenBrace,             // expecting array tag open brace
-            ExpectingBoolean,                       // expecting boolean string
             ExpectingBooleanChildTag,               // expecting boolean child tag
+            ExpectingBooleanType,                   // expecting boolean type
             ExpectingBooleanValue,                  // expecting boolean value string
             ExpectingKeyString,                     // expecting key string
             ExpectingLengthArrayCount,              // expecting valid length array count
@@ -64,8 +65,8 @@ namespace JSON
             ExpectingRangeArrayCount,               // expecting valid range array count
             ExpectingRangeValue,                    // expecting range value
             ExpectingStringChildTag,                // expecting string child tag
-            ExpectingSymbol,                        // expecting symbol character
-            ExpectingToken,                         // expecting tokanizable character
+            ExpectingSymbolType,                    // expecting symbol character type
+            ExpectingTokenType,                     // expecting tokanizable character
             FileException,                          // generic file io exception occurred
             InternalException,                      // generic internal exception
             InvalidKey,                             // invalid key string
@@ -74,7 +75,7 @@ namespace JSON
             InvalidValueRange,                      // invalid value range
             KeyNotFound,                            // key not found
             KeyNotUnique,                           // key is not unique
-            MissingSchemaTag,                       // missing required schema tag
+            MissingRequiredSchemaTag,               // missing required schema tag
             NoChildTagExists,                       // no child tag exists in input tag
             NoNextCharacter,                        // no next character exists in character stream
             NoNextToken,                            // no next token exists in token stream
@@ -86,13 +87,13 @@ namespace JSON
             NotTypeObject,                          // not object tag type
             NotTypeString,                          // not string tag type
             ObjectChildCountMismatch,               // object element count does not match schema
-            RowOutOfBounds,                         // character row does not exist
             SchemaMismatch,                         // schema does not match input
             StringPatternMismatch,                  // string pattern mismatch
             TokenAlreadyExists,                     // token already exists
             TokenNotFound,                          // token does not exist
             TokenOutOfBounds,                       // token exceeds max token in stream
-            UnexpectedEndOfStream,                  // unexpected end of stream
+            UnexpectedEndOfCharacterStream,         // unexpected end of stream
+            UnexpectedEndOfTokenStream,             // unexpected end of token
             UnknownSchemaTagType,                   // unknown schema tag type string
             UnterminatedString,                     // unterminated string
             ValueOutOfRange,                        // value is out of range

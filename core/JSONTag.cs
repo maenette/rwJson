@@ -160,17 +160,11 @@ namespace JSON
         public IJSONTag this[string Key]
         {
             get { 
-                throw new JSONException(
-                    JSONException.JSONExceptionType.NotTypeObject, 
-                    type.ToString()
-                    ); 
+                throw new JSONException(JSONException.JSONExceptionType.NotTypeObject, type.ToString());
             }
 
             set { 
-                throw new JSONException(
-                    JSONException.JSONExceptionType.NotTypeObject, 
-                    type.ToString()
-                    ); 
+                throw new JSONException(JSONException.JSONExceptionType.NotTypeObject, type.ToString()); 
             }
         }
 
@@ -189,10 +183,7 @@ namespace JSON
          */
         public bool AsBoolean()
         {
-            throw new JSONException(
-                JSONException.JSONExceptionType.NotTypeBoolean,
-                type.ToString()
-                );
+            throw new JSONException(JSONException.JSONExceptionType.NotTypeBoolean, type.ToString());
         }
 
         /*
@@ -201,10 +192,7 @@ namespace JSON
          */
         public float AsFloat()
         {
-            throw new JSONException(
-                JSONException.JSONExceptionType.NotTypeNumber,
-                type.ToString()
-                );
+            throw new JSONException(JSONException.JSONExceptionType.NotTypeNumber, type.ToString());
         }
 
         /*
@@ -213,10 +201,7 @@ namespace JSON
          */
         public int AsInteger()
         {
-            throw new JSONException(
-                JSONException.JSONExceptionType.NotTypeNumber,
-                type.ToString()
-                );
+            throw new JSONException(JSONException.JSONExceptionType.NotTypeNumber, type.ToString());
         }
 
         /*
@@ -225,10 +210,7 @@ namespace JSON
          */
         public JSONObjectTag AsObject()
         {
-            throw new JSONException(
-                JSONException.JSONExceptionType.NotTypeObject,
-                type.ToString()
-                );
+            throw new JSONException(JSONException.JSONExceptionType.NotTypeObject, type.ToString());
         }
 
         /*
@@ -237,10 +219,7 @@ namespace JSON
          */
         public string AsString()
         {
-            throw new JSONException(
-                JSONException.JSONExceptionType.NotTypeString,
-                type.ToString()
-                );
+            throw new JSONException(JSONException.JSONExceptionType.NotTypeString, type.ToString());
         }
 
         /*
@@ -418,18 +397,12 @@ namespace JSON
         {
             get
             {
-                throw new JSONException(
-                    JSONException.JSONExceptionType.NotTypeObject,
-                    type.ToString()
-                    );
+                throw new JSONException(JSONException.JSONExceptionType.NotTypeObject, type.ToString());
             }
 
             set
             {
-                throw new JSONException(
-                    JSONException.JSONExceptionType.NotTypeObject,
-                    type.ToString()
-                    );
+                throw new JSONException(JSONException.JSONExceptionType.NotTypeObject, type.ToString());
             }
         }
 
@@ -460,10 +433,7 @@ namespace JSON
          */
         public float AsFloat()
         {
-            throw new JSONException(
-                JSONException.JSONExceptionType.NotTypeNumber,
-                type.ToString()
-                );
+            throw new JSONException(JSONException.JSONExceptionType.NotTypeNumber, type.ToString());
         }
 
         /*
@@ -472,10 +442,7 @@ namespace JSON
          */
         public int AsInteger()
         {
-            throw new JSONException(
-                JSONException.JSONExceptionType.NotTypeNumber,
-                type.ToString()
-                );
+            throw new JSONException(JSONException.JSONExceptionType.NotTypeNumber, type.ToString());
         }
 
         /*
@@ -484,10 +451,7 @@ namespace JSON
          */
         public JSONObjectTag AsObject()
         {
-            throw new JSONException(
-                JSONException.JSONExceptionType.NotTypeObject,
-                type.ToString()
-                );
+            throw new JSONException(JSONException.JSONExceptionType.NotTypeObject, type.ToString());
         }
 
         /*
@@ -657,18 +621,12 @@ namespace JSON
         {
             get
             {
-                throw new JSONException(
-                    JSONException.JSONExceptionType.NotTypeObject,
-                    type.ToString()
-                    );
+                throw new JSONException(JSONException.JSONExceptionType.NotTypeObject, type.ToString());
             }
 
             set
             {
-                throw new JSONException(
-                    JSONException.JSONExceptionType.NotTypeObject,
-                    type.ToString()
-                    );
+                throw new JSONException(JSONException.JSONExceptionType.NotTypeObject, type.ToString());
             }
         }
 
@@ -690,10 +648,7 @@ namespace JSON
          */
         public bool AsBoolean()
         {
-            throw new JSONException(
-                JSONException.JSONExceptionType.NotTypeBoolean,
-                type.ToString()
-                );
+            throw new JSONException(JSONException.JSONExceptionType.NotTypeBoolean, type.ToString());
         }
 
         /*
@@ -720,10 +675,7 @@ namespace JSON
          */
         public JSONObjectTag AsObject()
         {
-            throw new JSONException(
-                JSONException.JSONExceptionType.NotTypeObject,
-                type.ToString()
-                );
+            throw new JSONException(JSONException.JSONExceptionType.NotTypeObject, type.ToString());
         }
 
         /*
@@ -906,10 +858,7 @@ namespace JSON
          */
         public bool AsBoolean()
         {
-            throw new JSONException(
-                JSONException.JSONExceptionType.NotTypeBoolean,
-                type.ToString()
-                );
+            throw new JSONException(JSONException.JSONExceptionType.NotTypeBoolean, type.ToString());
         }
 
         /*
@@ -918,10 +867,7 @@ namespace JSON
          */
         public float AsFloat()
         {
-            throw new JSONException(
-                JSONException.JSONExceptionType.NotTypeNumber,
-                type.ToString()
-                );
+            throw new JSONException(JSONException.JSONExceptionType.NotTypeNumber, type.ToString());
         }
 
         /*
@@ -930,10 +876,7 @@ namespace JSON
          */
         public int AsInteger()
         {
-            throw new JSONException(
-                JSONException.JSONExceptionType.NotTypeNumber,
-                type.ToString()
-                );
+            throw new JSONException(JSONException.JSONExceptionType.NotTypeNumber, type.ToString());
         }
 
         /*
@@ -1132,18 +1075,12 @@ namespace JSON
         {
             get
             {
-                throw new JSONException(
-                    JSONException.JSONExceptionType.NotTypeObject,
-                    type.ToString()
-                    );
+                throw new JSONException(JSONException.JSONExceptionType.NotTypeObject, type.ToString());
             }
 
             set
             {
-                throw new JSONException(
-                    JSONException.JSONExceptionType.NotTypeObject,
-                    type.ToString()
-                    );
+                throw new JSONException(JSONException.JSONExceptionType.NotTypeObject, type.ToString());
             }
         }
 
@@ -1165,10 +1102,7 @@ namespace JSON
          */
         public bool AsBoolean()
         {
-            throw new JSONException(
-                JSONException.JSONExceptionType.NotTypeBoolean,
-                type.ToString()
-                );
+            throw new JSONException(JSONException.JSONExceptionType.NotTypeBoolean, type.ToString());
         }
 
         /*
@@ -1177,10 +1111,7 @@ namespace JSON
          */
         public float AsFloat()
         {
-            throw new JSONException(
-                JSONException.JSONExceptionType.NotTypeNumber,
-                type.ToString()
-                );
+            throw new JSONException(JSONException.JSONExceptionType.NotTypeNumber, type.ToString());
         }
 
         /*
@@ -1189,10 +1120,7 @@ namespace JSON
          */
         public int AsInteger()
         {
-            throw new JSONException(
-                JSONException.JSONExceptionType.NotTypeNumber,
-                type.ToString()
-                );
+            throw new JSONException(JSONException.JSONExceptionType.NotTypeNumber, type.ToString());
         }
 
         /*
@@ -1201,10 +1129,7 @@ namespace JSON
          */
         public JSONObjectTag AsObject()
         {
-            throw new JSONException(
-                JSONException.JSONExceptionType.NotTypeObject,
-                type.ToString()
-                );
+            throw new JSONException(JSONException.JSONExceptionType.NotTypeObject, type.ToString());
         }
 
         /*

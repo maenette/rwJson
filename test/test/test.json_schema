@@ -7,20 +7,20 @@
 		"firstName": {
 			"@type": "string",
 			"@pattern": "^[A-Z][a-z]*$",
-			"@length": [ 1, 50, ]
+			"@length": [ 1, 50 ]
 		},
 		"lastName": {
 			"@type": "string",
 			"@pattern": "^[A-Z][a-z]*$",
-			"@length": [ 1, 50, ]
+			"@length": [ 1, 50 ]
 		},
 		"age": {
 			"@type": "integer",
-			"@range": [ 1, 100, ]
+			"@range": [ 1, 100 ]
 		},
 		"pi": {
 			"@type": "float",
-			"@range": [ 3.14159, ],
+			"@range": [ 3.14159 ],
 			"@optional": true
 		},
 		"address": {
@@ -29,21 +29,21 @@
 				"streetAddress": {
 					"@type": "string",
 					"@pattern": "^[0-9]+\ [a-zA-Z0-9]+(\ [A-Z][a-z]*)?$",
-					"@length": [ 1, 100, ],
+					"@length": [ 1, 100 ],
 				},
 				"city": {
 					"@type": "string",
 					"@pattern": "^[A-Z][a-z]*([\ ][A-Z][a-z]*)*$",
-					"@length": [ 1, 50, ],
+					"@length": [ 1, 50 ],
 				},
 				"state": {
 					"@type": "string",
 					"@pattern": "^[A-Z]{2}$",
-					"@length": [ 2, ],
+					"@length": [ 2 ],
 				},
 				"postalCode": {
 					"@type": "integer",
-					"@range": [ 00000, 99999, ],
+					"@range": [ 00000, 99999 ],
 				}
 			}
 		},
@@ -56,16 +56,16 @@
 					"type": {
 						"@type": "string",
 						"@pattern": "^[a-zA-Z][a-z]*$",
-						"@length": [ 1, 50, ],
+						"@length": [ 1, 50 ],
 					},
 					"number": {
 						"@type": "string",
 						"@pattern": "^[0-9]{3}\ [0-9]{3}-[0-9]{4}$",
-						"@length": [ 7, 50, ],
+						"@length": [ 7, 50 ],
 					},
 					"callable": {
 						"@type": "boolean",
-						"@range": [ true, false, ],
+						"@range": [ true, false ],
 					}
 				}
 			}

@@ -269,10 +269,8 @@ namespace JSON
         {
             if ((Position < 0) || (Position >= input.Length))
             {
-                throw new JSONException(
-                    JSONException.JSONExceptionType.CharacterOutOfBounds,
-                    "pos. " + Position.ToString()
-                    );
+                throw new JSONException(JSONException.JSONExceptionType.InternalException, 
+                    new JSONException(JSONException.JSONExceptionType.CharacterOutOfBounds, Position.ToString()));
             }
 
             return Input[Position];
@@ -307,7 +305,8 @@ namespace JSON
 
             if (!HasNextCharacter())
             {
-                throw new JSONException(JSONException.JSONExceptionType.NoNextCharacter);
+                throw new JSONException(JSONException.JSONExceptionType.InternalException, 
+                    new JSONException(JSONException.JSONExceptionType.NoNextCharacter));
             }
 
             if (GetCharacter() == (char)JSONDefines.JSONWhitespaceType.LineFeed)
@@ -328,7 +327,8 @@ namespace JSON
 
             if (!ExpectEnd && !HasNextCharacter())
             {
-                throw new JSONException(JSONException.JSONExceptionType.UnexpectedEndOfStream);
+                throw new JSONException(JSONException.JSONExceptionType.InternalException, 
+                    new JSONException(JSONException.JSONExceptionType.UnexpectedEndOfCharacterStream));
             }
 
             return GetCharacter();
@@ -342,7 +342,8 @@ namespace JSON
         {
             if (!HasPreviousCharacter())
             {
-                throw new JSONException(JSONException.JSONExceptionType.NoPreviousCharacter);
+                throw new JSONException(JSONException.JSONExceptionType.InternalException, 
+                    new JSONException(JSONException.JSONExceptionType.NoPreviousCharacter));
             }
             --characterPosition;
             DetermineCharacterType();
@@ -352,10 +353,8 @@ namespace JSON
 
                 if (!characterColumnLength.TryGetValue(--characterRow, out characterColumn))
                 {
-                    throw new JSONException(
-                        JSONException.JSONExceptionType.RowOutOfBounds,
-                        "row. " + characterRow.ToString()
-                        );
+                    throw new JSONException(JSONException.JSONExceptionType.InternalException, 
+                        new JSONException(JSONException.JSONExceptionType.CharacterRowOutOfBounds, characterRow.ToString()));
                 }
             }
             else
@@ -402,11 +401,7 @@ namespace JSON
                 }
                 catch (Exception exception)
                 {
-                    throw new JSONException(
-                        JSONException.JSONExceptionType.FileException,
-                        exception.Message,
-                        exception
-                        );
+                    throw new JSONException(JSONException.JSONExceptionType.FileException, exception);
                 }
             }
             else
@@ -537,12 +532,12 @@ namespace JSON
 
             if (tokenMap.TryGetValue(Token.UniqueID, out testToken))
             {
-                throw new JSONException(
-                    JSONException.JSONExceptionType.TokenAlreadyExists
+                throw new JSONException(JSONException.JSONExceptionType.InternalException, 
+                    new JSONException(JSONException.JSONExceptionType.TokenAlreadyExists
 #if DEBUG
                     , "{" + Token.UniqueID.ToString() + "}"
 #endif // DEBUG
-                    );
+                    ));
             }
             tokenList.Add(Token.UniqueID);
             tokenMap.Add(Token.UniqueID, Token);
@@ -597,7 +592,8 @@ namespace JSON
             }
             else if (!ExpectEnd)
             {
-                throw new JSONException(JSONException.JSONExceptionType.UnexpectedEndOfStream);
+                throw new JSONException(JSONException.JSONExceptionType.InternalException, 
+                    new JSONException(JSONException.JSONExceptionType.UnexpectedEndOfTokenStream));
             }
 
             return nextCharacter;
@@ -638,7 +634,7 @@ namespace JSON
          */
         private JSONToken EnumerateBoolean()
         {
-            JSONToken newToken = new JSONToken(string.Empty, JSONToken.JSONTokenType.Boolean);
+            JSONToken newToken = new JSONToken(string.Empty, JSONToken.JSONTokenType.String);
 
             newToken.Text += GetCharacter();
             newToken.Line = CharacterRow;
@@ -654,16 +650,14 @@ namespace JSON
                 }
                 newToken.Text += GetCharacter();
             }
-            newToken.SubType = newToken.Text;
-
+            
             if (!newToken.Text.Equals("false")
                 && !newToken.Text.Equals("true"))
             {
-                throw new JSONException(
-                    JSONException.JSONExceptionType.ExpectingBoolean,
-                    "\'" + newToken.Text + "\'"
-                    );
+                throw new JSONException(JSONException.JSONExceptionType.ExpectingBooleanType, newToken.ToString());
             }
+            newToken.Type = JSONToken.JSONTokenType.Boolean;
+            newToken.SubType = newToken.Text;
             newToken.Text = string.Empty;
 
             return newToken;
@@ -723,7 +717,6 @@ namespace JSON
         {
             bool closed = false;
             char currentCharacter = GetCharacter();
-            string startCharacter = base.ToString();
             JSONToken newToken = new JSONToken(string.Empty, JSONToken.JSONTokenType.String);
 
             newToken.Line = CharacterRow;
@@ -753,10 +746,7 @@ namespace JSON
 
             if (!closed)
             {
-                throw new JSONException(
-                    JSONException.JSONExceptionType.UnterminatedString,
-                    startCharacter
-                    );
+                throw new JSONException(JSONException.JSONExceptionType.UnterminatedString, newToken.ToString());
             }
             AdvanceCharacter();
 
@@ -785,10 +775,7 @@ namespace JSON
                     AdvanceCharacter();
                     break;
                 default:
-                    throw new JSONException(
-                        JSONException.JSONExceptionType.ExpectingSymbol,
-                        base.ToString()
-                        );
+                    throw new JSONException(JSONException.JSONExceptionType.ExpectingSymbolType, base.ToString());
             }
 
             return newToken;
@@ -826,10 +813,7 @@ namespace JSON
                     }
                     break;
                 default:
-                    throw new JSONException(
-                        JSONException.JSONExceptionType.ExpectingToken,
-                        base.ToString()
-                        );
+                    throw new JSONException(JSONException.JSONExceptionType.ExpectingTokenType, base.ToString());
             }
 
             return newToken;
@@ -846,12 +830,12 @@ namespace JSON
 
             if (!tokenMap.TryGetValue(UniqueID, out token))
             {
-                throw new JSONException(
-                    JSONException.JSONExceptionType.TokenNotFound
+                throw new JSONException(JSONException.JSONExceptionType.InternalException, 
+                    new JSONException(JSONException.JSONExceptionType.TokenNotFound
 #if DEBUG
                     , "{" + UniqueID.ToString() + "}"
 #endif // DEBUG
-                    );
+                    ));
             }
 
             return token;
@@ -893,10 +877,8 @@ namespace JSON
         {
             if ((Position < 0) || (Position >= tokenList.Count))
             {
-                throw new JSONException(
-                    JSONException.JSONExceptionType.TokenOutOfBounds,
-                    "pos. " + Position.ToString()
-                    );
+                throw new JSONException(JSONException.JSONExceptionType.InternalException, 
+                    new JSONException(JSONException.JSONExceptionType.TokenOutOfBounds, Position.ToString()));
             }
 
             return FindToken(tokenList[Position]);
@@ -931,12 +913,12 @@ namespace JSON
 
             if (tokenMap.TryGetValue(Token.UniqueID, out testToken))
             {
-                throw new JSONException(
-                    JSONException.JSONExceptionType.TokenAlreadyExists
+                throw new JSONException(JSONException.JSONExceptionType.InternalException, 
+                    new JSONException(JSONException.JSONExceptionType.TokenAlreadyExists
 #if DEBUG
                     , "{" + Token.UniqueID.ToString() + "}"
 #endif // DEBUG
-                    );
+                    ));
             }
             tokenList.Insert(tokenPosition + 1, Token.UniqueID);
             tokenMap.Add(Token.UniqueID, Token);
@@ -985,7 +967,8 @@ namespace JSON
         {
             if (!HasNextToken())
             {
-                throw new JSONException(JSONException.JSONExceptionType.NoNextToken);
+                throw new JSONException(JSONException.JSONExceptionType.InternalException, 
+                    new JSONException(JSONException.JSONExceptionType.NoNextToken));
             }
 
             if (HasNextCharacter() && (tokenPosition <= (tokenList.Count - 2)))
@@ -1001,7 +984,8 @@ namespace JSON
 
             if (!ExpectEnd && !HasNextToken())
             {
-                throw new JSONException(JSONException.JSONExceptionType.UnexpectedEndOfStream);
+                throw new JSONException(JSONException.JSONExceptionType.InternalException, 
+                    new JSONException(JSONException.JSONExceptionType.UnexpectedEndOfTokenStream));
             }
             else
             {
@@ -1019,7 +1003,8 @@ namespace JSON
         {
             if (!HasPreviousToken())
             {
-                throw new JSONException(JSONException.JSONExceptionType.NoPreviousToken);
+                throw new JSONException(JSONException.JSONExceptionType.InternalException, 
+                    new JSONException(JSONException.JSONExceptionType.NoPreviousToken));
             }
             --tokenPosition;
 

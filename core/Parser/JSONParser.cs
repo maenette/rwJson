@@ -67,10 +67,8 @@ namespace JSON
             }
             else if (!ExpectEnd)
             {
-                throw new JSONException(
-                    JSONException.JSONExceptionType.UnexpectedEndOfStream,
-                    GetToken().ToString()
-                    );
+                throw new JSONException(JSONException.JSONExceptionType.InternalException, 
+                    new JSONException(JSONException.JSONExceptionType.UnexpectedEndOfTokenStream, GetToken().ToString()));
             }
 
             return nextToken;
@@ -112,10 +110,7 @@ namespace JSON
             if ((currentToken.Type != JSONToken.JSONTokenType.Symbol)
                 || ((char)currentToken.SubType != (char)JSONDefines.JSONSymbolType.ArrayOpen))
             {
-                throw new JSONException(
-                    JSONException.JSONExceptionType.ExpectingArrayTagOpenBrace,
-                    currentToken.ToString()
-                    );
+                throw new JSONException(JSONException.JSONExceptionType.ExpectingArrayTagOpenBrace, currentToken.ToString());
             }
             currentToken = AdvanceToken();
 
@@ -146,10 +141,7 @@ namespace JSON
             if ((currentToken.Type != JSONToken.JSONTokenType.Symbol)
                 || ((char)currentToken.SubType != (char)JSONDefines.JSONSymbolType.ArrayClose))
             {
-                throw new JSONException(
-                    JSONException.JSONExceptionType.ExpectingArrayTagCloseBrace,
-                    currentToken.ToString()
-                    );
+                throw new JSONException(JSONException.JSONExceptionType.ExpectingArrayTagCloseBrace, currentToken.ToString());
             }
             AdvanceToken();
 
@@ -169,10 +161,7 @@ namespace JSON
 
             if (currentToken.Type != JSONToken.JSONTokenType.String)
             {
-                throw new JSONException(
-                    JSONException.JSONExceptionType.ExpectingKeyString,
-                    currentToken.ToString()
-                    );
+                throw new JSONException(JSONException.JSONExceptionType.ExpectingKeyString, currentToken.ToString());
             }
             newKey = currentToken.Text;
             currentToken = AdvanceToken(false);
@@ -180,10 +169,7 @@ namespace JSON
             if ((currentToken.Type != JSONToken.JSONTokenType.Symbol)
                 || ((char)currentToken.SubType != (char)JSONDefines.JSONSymbolType.PairSeperator))
             {
-                throw new JSONException(
-                    JSONException.JSONExceptionType.ExpectingPairDelimiter,
-                    currentToken.ToString()
-                    );
+                throw new JSONException(JSONException.JSONExceptionType.ExpectingPairDelimiter, currentToken.ToString());
             }
             AdvanceToken(false);
 
@@ -210,10 +196,7 @@ namespace JSON
             if ((currentToken.Type != JSONToken.JSONTokenType.Symbol)
                 || ((char)currentToken.SubType != (char)JSONDefines.JSONSymbolType.ObjectOpen))
             {
-                throw new JSONException(
-                    JSONException.JSONExceptionType.ExpectingObjectTagOpenBracket,
-                    currentToken.ToString()
-                    );
+                throw new JSONException(JSONException.JSONExceptionType.ExpectingObjectTagOpenBracket, currentToken.ToString());
             }
             currentToken = AdvanceToken();
 
@@ -231,11 +214,8 @@ namespace JSON
                     }
                     catch (Exception exception)
                     {
-                        throw new JSONException(
-                            JSONException.JSONExceptionType.KeyNotUnique,
-                            "\'" + newSubTag.GetKey() + "\'",
-                            exception
-                            );
+                        throw new JSONException(JSONException.JSONExceptionType.InternalException, 
+                            new JSONException(JSONException.JSONExceptionType.KeyNotUnique, newSubTag.GetKey(), exception));
                     }
                     currentToken = GetToken();
 
@@ -257,10 +237,7 @@ namespace JSON
             if ((currentToken.Type != JSONToken.JSONTokenType.Symbol)
                 || ((char)currentToken.SubType != (char)JSONDefines.JSONSymbolType.ObjectClose))
             {
-                throw new JSONException(
-                    JSONException.JSONExceptionType.ExpectingObjectTagCloseBracket,
-                    currentToken.ToString()
-                    );
+                throw new JSONException(JSONException.JSONExceptionType.ExpectingObjectTagCloseBracket, currentToken.ToString());
             }
             AdvanceToken();
 
@@ -317,10 +294,7 @@ namespace JSON
                     
                     if (!Boolean.TryParse((string)currentToken.SubType, out newTagBoolValue))
                     {
-                        throw new JSONException(
-                            JSONException.JSONExceptionType.ExpectingBooleanValue,
-                            currentToken.ToString()
-                            );
+                        throw new JSONException(JSONException.JSONExceptionType.ExpectingBooleanValue, currentToken.ToString());
                     }
                     newTag = new JSONBooleanTag(newTagKey, newTagBoolValue);
                     AdvanceToken();
@@ -329,10 +303,7 @@ namespace JSON
 
                     if (!Single.TryParse(currentToken.Text, out newTagFloatValue))
                     {
-                        throw new JSONException(
-                            JSONException.JSONExceptionType.ExpectingNumericValue,
-                            currentToken.ToString()
-                            );
+                        throw new JSONException(JSONException.JSONExceptionType.ExpectingNumericValue, currentToken.ToString());
                     }
                     newTag = new JSONNumberTag(newTagKey, newTagFloatValue);
                     AdvanceToken();
@@ -354,17 +325,11 @@ namespace JSON
                             newTag.SetKey(newTagKey);
                             break;
                         default:
-                            throw new JSONException(
-                                JSONException.JSONExceptionType.ExpectingToken,
-                                currentToken.ToString()
-                                );
+                            throw new JSONException(JSONException.JSONExceptionType.ExpectingTokenType, currentToken.ToString());
                     }
                     break;
                 default:
-                    throw new JSONException(
-                        JSONException.JSONExceptionType.ExpectingToken,
-                        currentToken.ToString()
-                        );
+                    throw new JSONException(JSONException.JSONExceptionType.ExpectingTokenType, currentToken.ToString());
             }
 
             return newTag;

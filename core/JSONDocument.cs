@@ -95,10 +95,7 @@ namespace JSON
 
             if (key.Equals(string.Empty))
             {
-                throw new JSONException(
-                    JSONException.JSONExceptionType.InvalidKey,
-                    "\'" + key + "\'"
-                    );
+                throw new JSONException(JSONException.JSONExceptionType.InvalidKey, key);
             }
 
             return key;
@@ -215,10 +212,7 @@ namespace JSON
             {
                 if (!isOverridable)
                 {
-                    throw new JSONException(
-                        JSONException.JSONExceptionType.KeyNotUnique,
-                        "\'" + Key + "\'"
-                        );
+                    throw new JSONException(JSONException.JSONExceptionType.KeyNotUnique, Key);
                 }
                 else
                 {
@@ -242,7 +236,8 @@ namespace JSON
 
             if ((InputTag.Count == 0) || (!inputTagEnum.MoveNext()))
             {
-                throw new JSONException(JSONException.JSONExceptionType.NoChildTagExists, InputTag.ToString());
+                throw new JSONException(JSONException.JSONExceptionType.InternalException, 
+                    new JSONException(JSONException.JSONExceptionType.NoChildTagExists, InputTag.ToString()));
             }
             childTag = inputTagEnum.Current.Value;
 
@@ -271,7 +266,7 @@ namespace JSON
             }
             catch (Exception exception)
             {
-                throw new JSONException(JSONException.JSONExceptionType.MissingSchemaTag, JSONDefines.SCHEMA_TAG_ENTRY, exception);
+                throw new JSONException(JSONException.JSONExceptionType.MissingRequiredSchemaTag, JSONDefines.SCHEMA_TAG_ENTRY, exception);
             }
 
             return entryTag;
@@ -295,7 +290,7 @@ namespace JSON
             }
             catch (Exception exception)
             {
-                throw new JSONException(JSONException.JSONExceptionType.MissingSchemaTag, JSONDefines.SCHEMA_TAG_TYPE, exception);
+                throw new JSONException(JSONException.JSONExceptionType.MissingRequiredSchemaTag, JSONDefines.SCHEMA_TAG_TYPE, exception);
             }
 
             switch (entryTag.Value)
@@ -345,7 +340,7 @@ namespace JSON
             }
             catch (Exception exception)
             {
-                throw new JSONException(JSONException.JSONExceptionType.MissingSchemaTag, JSONDefines.SCHEMA_TAG_TYPE, exception);
+                throw new JSONException(JSONException.JSONExceptionType.MissingRequiredSchemaTag, JSONDefines.SCHEMA_TAG_TYPE, exception);
             }
 
             return typeTag;
@@ -362,10 +357,7 @@ namespace JSON
 
             if (!TryGetValue(Key, out objectTag))
             {
-                throw new JSONException(
-                    JSONException.JSONExceptionType.KeyNotFound,
-                    "\'" + Key + "\'"
-                    );
+                throw new JSONException(JSONException.JSONExceptionType.KeyNotFound, Key);
             }
 
             return objectTag.ToString();
@@ -433,7 +425,8 @@ namespace JSON
 
                 if (InputTag.Count != elementCount)
                 {
-                    throw new JSONException(JSONException.JSONExceptionType.ArrayChildCountMismatch, InputTag.GetKey() + "[" + elementCount + "]");
+                    throw new JSONException(JSONException.JSONExceptionType.ArrayChildCountMismatch, InputTag.GetKey() 
+                        + " (must contain " + elementCount + " element(s))");
                 }
             }
 
@@ -507,7 +500,7 @@ namespace JSON
                 if ((rangeArrayTag.Count < JSONDefines.SCHEMA_RANGE_MIN_COUNT) || (rangeArrayTag.Count > JSONDefines.SCHEMA_RANGE_MAX_COUNT))
                 {
                     throw new JSONException(JSONException.JSONExceptionType.ExpectingRangeArrayCount, InputTag.GetKey()
-                        + "[" + JSONDefines.SCHEMA_RANGE_MIN_COUNT + "||" + JSONDefines.SCHEMA_RANGE_MAX_COUNT + "]");
+                        + " (must contain values in the range [" + JSONDefines.SCHEMA_RANGE_MIN_COUNT + " - " + JSONDefines.SCHEMA_RANGE_MAX_COUNT + "])");
                 }
 
                 foreach (IJSONTag element in rangeArrayTag)
@@ -541,12 +534,12 @@ namespace JSON
                 if (InputTag.AsBoolean() && !allowTrue)
                 {
                     throw new JSONException(JSONException.JSONExceptionType.BooleanOutOfRange, InputTag.GetKey()
-                        + " [" + InputTag.AsBoolean() + " is not allowed]");
+                        + " (" + InputTag.AsBoolean() + " is not allowed)");
                 }
                 else if (!InputTag.AsBoolean() && !allowFalse)
                 {
                     throw new JSONException(JSONException.JSONExceptionType.BooleanOutOfRange, InputTag.GetKey()
-                        + " [" + InputTag.AsBoolean() + " is not allowed]");
+                        + " (" + InputTag.AsBoolean() + " is not allowed)");
                 }
             }
         }
@@ -577,7 +570,7 @@ namespace JSON
                 if ((rangeArrayTag.Count < JSONDefines.SCHEMA_RANGE_MIN_COUNT) || (rangeArrayTag.Count > JSONDefines.SCHEMA_RANGE_MAX_COUNT))
                 {
                     throw new JSONException(JSONException.JSONExceptionType.ExpectingRangeArrayCount, InputTag.GetKey()
-                        + "[" + JSONDefines.SCHEMA_RANGE_MIN_COUNT + "||" + JSONDefines.SCHEMA_RANGE_MAX_COUNT + "]");
+                        + " (must contain values in the range [" + JSONDefines.SCHEMA_RANGE_MIN_COUNT + " - " + JSONDefines.SCHEMA_RANGE_MAX_COUNT + "])");
                 }
 
                 foreach (IJSONTag element in rangeArrayTag)
@@ -603,13 +596,13 @@ namespace JSON
                     if (InputTag.AsFloat() < minFloatValue)
                     {
                         throw new JSONException(JSONException.JSONExceptionType.ValueOutOfRange, InputTag.GetKey() 
-                            + " [" + InputTag.AsFloat() + " < " + minFloatValue + "]");
+                            + " (must contain a value >= " + minFloatValue + ")");
                     }
 
                     if(InputTag.AsFloat() > maxFloatValue)
                     {
                         throw new JSONException(JSONException.JSONExceptionType.ValueOutOfRange, InputTag.GetKey()
-                            + " [" + InputTag.AsFloat() + " > " + maxFloatValue + "]");
+                            + " (must contain a value <= " + maxFloatValue + ")");
                     }
                 }
                 else
@@ -626,13 +619,13 @@ namespace JSON
                     if (InputTag.AsInteger() < minIntegerValue)
                     {
                         throw new JSONException(JSONException.JSONExceptionType.ValueOutOfRange, InputTag.GetKey()
-                            + " [" + InputTag.AsInteger() + " < " + minIntegerValue + "]");
+                            + " (must contain a value >= " + minIntegerValue + ")");
                     }
 
                     if (InputTag.AsInteger() > maxIntegerValue)
                     {
                         throw new JSONException(JSONException.JSONExceptionType.ValueOutOfRange, InputTag.GetKey()
-                            + " [" + InputTag.AsInteger() + " > " + maxIntegerValue + "]");
+                            + " (must contain a value <= " + maxIntegerValue + ")");
                     }
                 }
             }
@@ -671,7 +664,8 @@ namespace JSON
 
                     if (InputTag.Count != elementCount)
                     {
-                        throw new JSONException(JSONException.JSONExceptionType.ObjectChildCountMismatch, InputTag.GetKey() + "[" + elementCount + "]");
+                        throw new JSONException(JSONException.JSONExceptionType.ObjectChildCountMismatch, InputTag.GetKey() 
+                            + " (must contain " + elementCount + " element(s))");
                     }
                 }
 
@@ -795,7 +789,7 @@ namespace JSON
                 if ((lengthArrayTag.Count < JSONDefines.SCHEMA_LENGTH_MIN_COUNT) || (lengthArrayTag.Count > JSONDefines.SCHEMA_LENGTH_MAX_COUNT))
                 {
                     throw new JSONException(JSONException.JSONExceptionType.ExpectingLengthArrayCount, InputTag.GetKey()
-                        + "[" + JSONDefines.SCHEMA_LENGTH_MIN_COUNT + "||" + JSONDefines.SCHEMA_LENGTH_MAX_COUNT + "]");
+                        + " (must contain values of the length [" + JSONDefines.SCHEMA_LENGTH_MIN_COUNT + " - " + JSONDefines.SCHEMA_LENGTH_MAX_COUNT + "])");
                 }
 
                 foreach (IJSONTag element in lengthArrayTag)
@@ -818,13 +812,13 @@ namespace JSON
                 if (InputTag.AsString().Length < minLengthValue)
                 {
                     throw new JSONException(JSONException.JSONExceptionType.ValueOutOfRange, InputTag.GetKey()
-                        + " [" + InputTag.AsString().Length + " < " + minLengthValue + "]");
+                        + " (must contain a value of length >= " + minLengthValue + ")");
                 }
 
                 if (InputTag.AsString().Length > maxLengthValue)
                 {
                     throw new JSONException(JSONException.JSONExceptionType.ValueOutOfRange, InputTag.GetKey()
-                        + " [" + InputTag.AsString().Length + " > " + maxLengthValue + "]");
+                        + " (must contain a value of length <= " + maxLengthValue + ")");
                 }
             }
 
@@ -842,7 +836,7 @@ namespace JSON
                 if (!patternMatch.Success)
                 {
                     throw new JSONException(JSONException.JSONExceptionType.StringPatternMismatch, InputTag.GetKey() 
-                        + " [\'" + patternTag.AsString() + "\']");
+                        + " (must match the pattern \'" + patternTag.AsString() + "\')");
                 }
             }
         }
@@ -902,10 +896,7 @@ namespace JSON
 
             if (!TryGetValue(Key, out objectTag))
             {
-                throw new JSONException(
-                    JSONException.JSONExceptionType.KeyNotFound,
-                    "\'" + Key + "\'"
-                    );
+                throw new JSONException(JSONException.JSONExceptionType.KeyNotFound, Key);
             }
 
             try
@@ -916,11 +907,7 @@ namespace JSON
             }
             catch (Exception exception)
             {
-                throw new JSONException(
-                    JSONException.JSONExceptionType.FileException,
-                    exception.Message,
-                    exception
-                    );
+                throw new JSONException(JSONException.JSONExceptionType.FileException, exception);
             }
         }
 
