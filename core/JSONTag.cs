@@ -37,6 +37,21 @@ namespace JSON
     }
 
     /*
+     * JSON primitive interface
+     * ------------------------
+     * Holds JSON tag primitive information.
+     */
+    public interface IJSONPrimitive<T>
+    {
+
+        /*
+         * Retrieve primitive tag value
+         * @return primitive tag value
+         */
+        T AsValue();
+    }
+
+    /*
      * JSON tag interface
      * ------------------
      * Holds JSON tag key and type information.
@@ -159,11 +174,13 @@ namespace JSON
          */
         public IJSONTag this[string Key]
         {
-            get { 
+            get 
+            { 
                 throw new JSONException(JSONException.JSONExceptionType.NotTypeObject, type.ToString());
             }
 
-            set { 
+            set 
+            { 
                 throw new JSONException(JSONException.JSONExceptionType.NotTypeObject, type.ToString()); 
             }
         }
@@ -340,7 +357,7 @@ namespace JSON
      * Holds a boolean value
      * Syntax "<key>" : (true|false)
      */
-    public class JSONBooleanTag : IJSONTag
+    public class JSONBooleanTag : IJSONTag, IJSONPrimitive<bool>
     {
 
         /*
@@ -374,18 +391,12 @@ namespace JSON
         {
             get
             {
-                throw new JSONException(
-                    JSONException.JSONExceptionType.NotTypeArray,
-                    type.ToString()
-                    );
+                throw new JSONException(JSONException.JSONExceptionType.NotTypeArray, type.ToString());
             }
 
             set
             {
-                throw new JSONException(
-                    JSONException.JSONExceptionType.NotTypeArray,
-                    type.ToString()
-                    );
+                throw new JSONException(JSONException.JSONExceptionType.NotTypeArray, type.ToString());
             }
         }
 
@@ -464,6 +475,15 @@ namespace JSON
                 JSONException.JSONExceptionType.NotTypeString,
                 type.ToString()
                 );
+        }
+
+        /*
+         * Retrieve primitive tag value
+         * @return primitive tag value
+         */
+        public bool AsValue()
+        {
+            return this.Value;
         }
 
         /*
@@ -564,7 +584,7 @@ namespace JSON
      * Holds a float value
      * Syntax "<key>" : <float>
      */
-    public class JSONNumberTag : IJSONTag
+    public class JSONNumberTag : IJSONTag, IJSONPrimitive<float>
     {
 
         /*
@@ -598,18 +618,12 @@ namespace JSON
         {
             get
             {
-                throw new JSONException(
-                    JSONException.JSONExceptionType.NotTypeArray,
-                    type.ToString()
-                    );
+                throw new JSONException(JSONException.JSONExceptionType.NotTypeArray, type.ToString());
             }
 
             set
             {
-                throw new JSONException(
-                    JSONException.JSONExceptionType.NotTypeArray,
-                    type.ToString()
-                    );
+                throw new JSONException(JSONException.JSONExceptionType.NotTypeArray, type.ToString());
             }
         }
 
@@ -688,6 +702,15 @@ namespace JSON
                 JSONException.JSONExceptionType.NotTypeString,
                 type.ToString()
                 );
+        }
+
+        /*
+         * Retrieve primitive tag value
+         * @return primitive tag value
+         */
+        public float AsValue()
+        {
+            return this.Value;
         }
 
         /*
@@ -825,18 +848,12 @@ namespace JSON
         {
             get
             {
-                throw new JSONException(
-                    JSONException.JSONExceptionType.NotTypeArray,
-                    type.ToString()
-                    );
+                throw new JSONException(JSONException.JSONExceptionType.NotTypeArray, type.ToString());
             }
 
             set
             {
-                throw new JSONException(
-                    JSONException.JSONExceptionType.NotTypeArray,
-                    type.ToString()
-                    );
+                throw new JSONException(JSONException.JSONExceptionType.NotTypeArray, type.ToString());
             }
         }
 
@@ -1018,7 +1035,7 @@ namespace JSON
      * Holds a string value
      * Syntax "<key>" : "<value>"
      */
-    public class JSONStringTag : IJSONTag
+    public class JSONStringTag : IJSONTag, IJSONPrimitive<string>
     {
 
         /*
@@ -1052,18 +1069,12 @@ namespace JSON
         {
             get
             {
-                throw new JSONException(
-                    JSONException.JSONExceptionType.NotTypeArray,
-                    type.ToString()
-                    );
+                throw new JSONException(JSONException.JSONExceptionType.NotTypeArray, type.ToString());
             }
 
             set
             {
-                throw new JSONException(
-                    JSONException.JSONExceptionType.NotTypeArray,
-                    type.ToString()
-                    );
+                throw new JSONException(JSONException.JSONExceptionType.NotTypeArray, type.ToString());
             }
         }
 
@@ -1137,6 +1148,15 @@ namespace JSON
          * @return string tag value
          */
         public string AsString()
+        {
+            return this.Value;
+        }
+
+        /*
+         * Retrieve primitive tag value
+         * @return primitive tag value
+         */
+        public string AsValue()
         {
             return this.Value;
         }

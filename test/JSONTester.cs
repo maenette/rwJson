@@ -40,7 +40,7 @@ class TestClass
 
             // retrieve key-value pairs from json object
             Console.WriteLine("NAME: " + doc[key]["firstName"].AsString() + " " + doc[key]["lastName"].AsString());
-            Console.WriteLine("HOMEPHONE: " + doc[key]["phoneNumbers"][0]["number"].AsString());
+            Console.WriteLine("HOMEPHONE: " + ((IJSONPrimitive<string>)doc[key]["phoneNumbers"][0]["number"]).AsValue());
             Console.WriteLine("AGE: " + doc[key]["age"].AsInteger() + " (" + doc[key]["age"].AsFloat() + ")");
 
             // verify json file matches schema file

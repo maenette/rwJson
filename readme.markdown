@@ -27,6 +27,13 @@ Table of Contents
 Changelog
 =========
 
+###Version 0.1.1405r1
+Updated: 01/31/2013
+
+* Added the ability to retrieve primitive type (boolean, integer/float, string) values with 
+a generic call to AsValue().
+* Example: ``` string val = ((IJSONPrimitive<string>)doc[key]["phoneNumbers"][0]["number"]).AsValue(); ```
+
 ###Version 0.1.1404r3
 Updated: 01/25/2013
 

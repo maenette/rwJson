@@ -114,8 +114,8 @@ namespace JSON
         public const string LIB_COPYRIGHT = "Copyright (C) 2013-2014 David Jolly";      // library copyright
         public const uint LIB_MAJOR = 0;                                                // major version
         public const uint LIB_MINOR = 1;                                                // minor version
-        public const uint LIB_REVISION = 4;                                             // revision
-        public const uint LIB_WORKWEEK = 1404;                                          // year/workweek
+        public const uint LIB_REVISION = 1;                                             // revision
+        public const uint LIB_WORKWEEK = 1405;                                          // year/workweek
 
         /*
          * Retrieve JSON library version
